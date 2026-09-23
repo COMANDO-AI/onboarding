@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>COMANDO — Entrada al estudio</title>
+<meta name="description" content="Documento operativo de entrada al estudio COMANDO: el sistema, las herramientas, las tres lanes, las compuertas, el Canon, el rol FDE y el programa." />
+<meta name="robots" content="noindex,nofollow,noarchive,nosnippet" />
+<meta name="googlebot" content="noindex,nofollow" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400;500&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230b0b0c'/%3E%3Cpath d='M16 7l9 9-9 9-9-9z' fill='%238f9c6c'/%3E%3C/svg%3E" />
+<style>
+  /* ============ GREEN-SILVER · Control Surface ============ */
+  :root{
+    --bg:#0b0b0c; --bg-2:#0e0e10; --bg-3:#141416;
+    --fg:#f4f3f1;
+    --mid:rgba(244,243,241,0.58);
+    --faint:rgba(244,243,241,0.34);
+    --rule:rgba(244,243,241,0.10);
+    --rule-med:rgba(244,243,241,0.20);
+    --silver:#bcc2c4;
+    --accent:#8f9c6c;
+    --accent-soft:rgba(143,156,108,0.13);
+    --accent-line:rgba(143,156,108,0.50);
+    --hot:#f5a623;
+    --hot-soft:rgba(245,166,35,0.10);
+    --font-serif:'Cormorant Garamond',Georgia,serif;
+    --font-mono:'Space Mono',ui-monospace,'SF Mono',Menlo,monospace;
+    --font-sans:'DM Sans',-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
+    --maxw:1080px;
+    --gutter:clamp(16px,4.5vw,56px);
+    --radius:16px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg); color:var(--fg); font-family:var(--font-sans); font-weight:300;
+    -webkit-font-smoothing:antialiased; overflow-x:hidden}
+  ::selection{background:var(--accent);color:var(--bg)}
+
+  .bleed{position:fixed; inset:0; z-index:0; pointer-events:none;
+    background:radial-gradient(55% 40% at 82% 6%, rgba(143,156,108,0.14), transparent 70%),
+               radial-gradient(45% 35% at 12% 60%, rgba(120,86,46,0.10), transparent 72%);
+    filter:blur(40px)}
+
+  /* chrome */
+  .chrome{position:fixed; top:0; left:0; right:0; z-index:40; display:flex;
+    justify-content:space-between; align-items:center; gap:12px;
+    padding:12px var(--gutter); font-family:var(--font-mono); font-size:10px;
+    letter-spacing:.18em; text-transform:uppercase; color:var(--mid);
+    background:rgba(11,11,12,0.86); backdrop-filter:blur(12px); border-bottom:1px solid var(--rule)}
+  .chrome .grp{display:flex; align-items:center; gap:12px}
+  .wordmark{color:var(--fg); letter-spacing:.30em}
+  .sep{color:var(--faint)}
+  .tnum{font-variant-numeric:tabular-nums}
+  .live{display:inline-flex; align-items:center; gap:7px; color:var(--accent)}
+  .dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 2.4s ease-out infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(143,156,108,.45)}70%{box-shadow:0 0 0 8px rgba(143,156,108,0)}100%{box-shadow:0 0 0 0 rgba(143,156,108,0)}}
+  .track{position:fixed;top:0;left:0;right:0;height:2px;z-index:41}
+  .fill{height:100%;width:0;background:var(--accent)}
+  .reg{position:fixed;z-index:30;width:20px;height:20px;pointer-events:none;opacity:.45}
+  .reg::before,.reg::after{content:"";position:absolute;background:var(--rule-med)}
+  .reg::before{top:50%;left:0;width:100%;height:1px;transform:translateY(-50%)}
+  .reg::after{left:50%;top:0;height:100%;width:1px;transform:translateX(-50%)}
+  .reg.bl{bottom:20px;left:calc(var(--gutter) - 10px)}
+  .reg.br{bottom:20px;right:calc(var(--gutter) - 10px)}
+
+  main{position:relative;z-index:10;max-width:var(--maxw);margin:0 auto;padding:0 var(--gutter) 90px}
+
+  /* hero */
+  .hero{padding:118px 0 44px}
+  .display{font-family:var(--font-serif);font-weight:300;
+    font-size:clamp(2.6rem,7.6vw,4.9rem);line-height:.98;letter-spacing:-.025em}
+  .display em{font-style:italic;color:var(--accent)}
+  .lede{font-size:clamp(1rem,1.9vw,1.2rem);line-height:1.5;color:var(--mid);max-width:44ch;margin-top:24px}
+  .lede strong{color:var(--fg);font-weight:400}
+  .meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:28px}
+  .pill{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--silver);border:1px solid var(--rule-med);border-radius:999px;padding:6px 13px}
+  .pill .pd{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--accent);
+    margin-right:7px;vertical-align:middle}
+
+  /* how-to-use strip */
+  .strip{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:38px}
+  .strip .c{border:1px solid var(--rule);border-radius:var(--radius);padding:16px 18px;background:var(--bg-2)}
+  .strip .k{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--accent);margin-bottom:7px}
+  .strip .v{font-size:.9rem;line-height:1.45;color:var(--mid)}
+  .strip .v b{color:var(--fg);font-weight:400}
+
+  /* sections */
+  section{padding:58px 0;border-top:1px solid var(--rule)}
+  .eyebrow{font-family:var(--font-mono);font-size:10px;letter-spacing:.24em;text-transform:uppercase;
+    color:var(--accent);margin-bottom:18px;display:flex;align-items:center;gap:11px}
+  .eyebrow .n{color:var(--faint)}
+  .eyebrow .bar{width:24px;height:1px;background:var(--accent-line)}
+  h2{font-family:var(--font-serif);font-weight:300;font-size:clamp(1.8rem,4.6vw,2.9rem);
+    line-height:1.03;letter-spacing:-.022em;margin-bottom:20px}
+  h2 em{font-style:italic;color:var(--accent)}
+  h3{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--silver);margin:36px 0 13px;font-weight:700}
+  p{font-size:.985rem;line-height:1.62;color:var(--mid);max-width:66ch;margin-bottom:15px}
+  p strong{color:var(--fg);font-weight:400}
+  p em{font-style:italic;color:var(--silver)}
+  code{font-family:var(--font-mono);font-size:.85em;color:var(--silver);
+    background:rgba(244,243,241,0.055);padding:1px 5px;border-radius:4px}
+  a{color:var(--accent);text-decoration:none;border-bottom:1px solid var(--accent-line)}
+  a:hover{color:var(--fg);border-bottom-color:var(--fg)}
+  ul{list-style:none;max-width:66ch;margin-bottom:15px}
+  li{font-size:.985rem;line-height:1.58;color:var(--mid);padding-left:19px;position:relative;margin-bottom:10px}
+  li::before{content:"";position:absolute;left:0;top:.66em;width:7px;height:1px;background:var(--accent-line)}
+  li strong{color:var(--fg);font-weight:400}
+
+  /* figures */
+  figure{margin:26px 0 8px}
+  .fw{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--rule);
+    border-radius:var(--radius);background:var(--bg-2);padding:22px 20px}
+  .fw svg{display:block;width:100%;height:auto}
+  figcaption{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--faint);margin-top:11px;display:flex;gap:9px;align-items:baseline}
+  figcaption .fn{color:var(--accent)}
+  /* svg type */
+  .sv-l{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;fill:var(--faint)}
+  .sv-t{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:400;fill:var(--fg)}
+  .sv-s{font-family:'DM Sans',sans-serif;font-size:11.5px;font-weight:300;fill:var(--mid)}
+  .sv-a{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;fill:var(--accent)}
+  .sv-n{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.1em;fill:var(--silver)}
+  .sv-box{fill:var(--bg-3);stroke:var(--rule-med);stroke-width:1}
+  .sv-box-a{fill:var(--accent-soft);stroke:var(--accent-line);stroke-width:1}
+  .sv-box-h{fill:var(--hot-soft);stroke:rgba(245,166,35,.4);stroke-width:1}
+  .sv-ln{stroke:var(--rule-med);stroke-width:1;fill:none}
+  .sv-ln-a{stroke:var(--accent);stroke-width:1.4;fill:none}
+  .sv-ln-d{stroke:var(--rule-med);stroke-width:1;fill:none;stroke-dasharray:3 4}
+
+  /* tables */
+  .tw{overflow-x:auto;margin:20px 0 6px;-webkit-overflow-scrolling:touch}
+  table{border-collapse:collapse;width:100%;min-width:480px}
+  th{font-family:var(--font-mono);font-size:9px;letter-spacing:.17em;text-transform:uppercase;
+    color:var(--faint);text-align:left;font-weight:400;padding:0 15px 9px 0;
+    border-bottom:1px solid var(--rule-med);white-space:nowrap}
+  td{font-size:.915rem;line-height:1.48;color:var(--mid);padding:12px 15px 12px 0;
+    border-bottom:1px solid var(--rule);vertical-align:top}
+  td:first-child{color:var(--fg);font-weight:400}
+  td.num{font-family:var(--font-mono);font-variant-numeric:tabular-nums;color:var(--silver);
+    font-size:.84rem;white-space:nowrap}
+  td.yes{color:var(--accent)}
+  td.no{color:var(--hot)}
+  .gloss td:first-child,.lanes td:first-child{font-family:var(--font-mono);font-size:.8rem;
+    letter-spacing:.02em;color:var(--silver)}
+  .lanes th:first-child{width:118px}
+
+  /* numbered concept cards */
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(232px,1fr));gap:11px;margin-top:8px}
+  .card{border:1px solid var(--rule);border-radius:var(--radius);padding:17px 18px;background:var(--bg-2)}
+  .card .ix{font-family:var(--font-mono);font-size:10px;letter-spacing:.14em;color:var(--accent);
+    font-variant-numeric:tabular-nums;margin-bottom:8px;display:block}
+  .card .t{font-size:.97rem;color:var(--fg);margin-bottom:6px;font-weight:400}
+  .card .t code{font-size:.9em}
+  .card .d{font-size:.87rem;line-height:1.45;color:var(--mid)}
+
+  /* hero tool card */
+  .tool{border:1px solid var(--accent-line);border-radius:var(--radius);padding:24px 26px;
+    background:linear-gradient(180deg,var(--accent-soft),rgba(20,20,22,.4));margin-bottom:20px}
+  .tool .k{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--accent);margin-bottom:10px}
+  .tool h4{font-family:var(--font-serif);font-weight:300;font-size:clamp(1.5rem,3.6vw,2.1rem);
+    letter-spacing:-.02em;color:var(--fg);margin-bottom:10px}
+  .tool p{margin-bottom:0;max-width:62ch}
+
+  /* note panels */
+  .note{margin:22px 0;padding:18px 22px;border:1px solid var(--rule-med);border-radius:var(--radius);
+    background:rgba(20,20,20,.55)}
+  .note.stop{border-color:rgba(245,166,35,.32)}
+  .note .tag{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--accent);display:flex;align-items:center;gap:8px;margin-bottom:10px}
+  .note.stop .tag{color:var(--hot)}
+  .note.stop .tag::before{content:"\25A0";font-size:8px}
+  .note p{margin:0;max-width:68ch;font-size:.93rem}
+  .note p + p{margin-top:10px}
+
+  /* rhythm strip */
+  .rhythm{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:10px;
+    border:1px solid var(--rule-med);border-radius:var(--radius);overflow:hidden}
+  .rhythm .st{padding:18px 20px;border-right:1px solid var(--rule)}
+  .rhythm .st:last-child{border-right:none}
+  .rhythm .h{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--accent);margin-bottom:11px}
+  .rhythm ol{list-style:none;counter-reset:s}
+  .rhythm li{counter-increment:s;padding-left:22px;margin-bottom:8px;font-size:.88rem;line-height:1.4}
+  .rhythm li::before{content:counter(s);position:absolute;left:0;top:0;width:auto;height:auto;
+    background:none;font-family:var(--font-mono);font-size:9.5px;color:var(--faint)}
+
+  /* stage cards */
+  .stages{display:grid;gap:13px;margin-top:8px}
+  .stage{border:1px solid var(--rule-med);border-radius:var(--radius);padding:24px;background:var(--bg-2)}
+  .stage .hd{display:flex;align-items:baseline;gap:12px;margin-bottom:8px}
+  .stage .ix{font-family:var(--font-mono);font-size:10px;letter-spacing:.18em;color:var(--accent);
+    font-variant-numeric:tabular-nums}
+  .stage h4{font-family:var(--font-serif);font-weight:300;font-size:clamp(1.3rem,3.2vw,1.75rem);
+    line-height:1.1;letter-spacing:-.018em;color:var(--fg)}
+  .stage p{font-size:.94rem;margin-bottom:12px}
+  .todo{list-style:none;margin:14px 0 0}
+  .todo li{padding-left:26px;font-size:.9rem;margin-bottom:9px}
+  .todo li::before{content:"";position:absolute;left:0;top:.18em;width:12px;height:12px;
+    border:1px solid var(--rule-med);border-radius:3px;background:none}
+  .gate{margin-top:17px;padding-top:15px;border-top:1px solid var(--rule)}
+  .gate .lab{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--accent);display:inline-flex;align-items:center;gap:7px;margin-bottom:8px}
+  .gate .lab::before{content:"\25C6";font-size:8px}
+  .gate p{margin:0;font-size:.9rem;max-width:68ch}
+
+  blockquote{margin:24px 0;padding:20px 24px;border-left:2px solid var(--accent);
+    background:var(--accent-soft);border-radius:0 var(--radius) var(--radius) 0}
+  blockquote p{font-family:var(--font-serif);font-size:clamp(1.12rem,2.4vw,1.5rem);line-height:1.32;
+    color:var(--fg);font-style:italic;margin:0;max-width:48ch}
+  blockquote cite{display:block;margin-top:12px;font-family:var(--font-mono);font-style:normal;
+    font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--faint)}
+
+  ol.read{list-style:none;counter-reset:r;max-width:66ch}
+  ol.read li{counter-increment:r;padding-left:34px;margin-bottom:13px;font-size:.95rem}
+  ol.read li::before{content:counter(r,decimal-leading-zero);position:absolute;left:0;top:.06em;
+    font-family:var(--font-mono);font-size:10px;color:var(--faint);background:none;width:auto;height:auto}
+
+  footer{border-top:1px solid var(--rule);padding:30px var(--gutter) 40px;position:relative;z-index:10;
+    max-width:var(--maxw);margin:0 auto;font-family:var(--font-mono);font-size:10px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--faint);display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
+
+  @media (max-width:760px){
+    .strip,.rhythm{grid-template-columns:1fr}
+    .rhythm .st{border-right:none;border-bottom:1px solid var(--rule)}
+    .rhythm .st:last-child{border-bottom:none}
+  }
+  @media (max-width:640px){
+    .chrome .hide-s{display:none}
+    .reg{display:none}
+    .fw{padding:16px 14px}
+    .stage,.tool{padding:20px 18px}
+  }
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.dot{animation:none}}
+</style>
+</head>
+<body>
+<div class="bleed" aria-hidden="true"></div>
+<div class="track" aria-hidden="true"><div class="fill" id="fill"></div></div>
+
+<div class="chrome">
+  <div class="grp"><span class="wordmark">COMANDO</span><span class="sep hide-s">/</span>
+    <span class="hide-s" id="sec">Entrada al estudio</span></div>
+  <div class="grp"><span class="hide-s">v0.2</span><span class="sep hide-s">/</span>
+    <span class="tnum hide-s" id="clock">—</span><span class="sep hide-s">/</span>
+    <span class="live"><span class="dot"></span> Buenos Aires</span></div>
+</div>
+<span class="reg bl" aria-hidden="true"></span><span class="reg br" aria-hidden="true"></span>
+
+<main>
+
+<header class="hero">
+  <h1 class="display">Entrada al<br /><em>estudio</em></h1>
+  <p class="lede"><strong>Documento operativo.</strong> No es branding ni comunicación. Es cómo se trabaja acá: con qué herramientas, en qué orden, con qué permisos y qué te frena.</p>
+  <div class="meta">
+    <span class="pill"><span class="pd"></span>Interno</span>
+    <span class="pill">v0.2 · 2026-09-23</span>
+    <span class="pill">Buenos Aires</span>
+  </div>
+  <div class="strip">
+    <div class="c"><div class="k">Día 1 · en orden</div><div class="v">Secciones <b>1 a 4</b>. El sistema, las herramientas, cómo se mueve el trabajo, qué te frena. Operación pura.</div></div>
+    <div class="c"><div class="k">Antes de tocar un repo</div><div class="v">Secciones <b>5 y 6</b>. Cómo se lee cualquier repo del estudio y qué vendemos.</div></div>
+    <div class="c"><div class="k">Referencia</div><div class="v">Secciones <b>7 a 9</b>. Tu rol, tu programa, y el glosario. Se consultan, no se leen de una.</div></div>
+  </div>
+</header>
+
+<section id="s1">
+  <div class="eyebrow"><span class="n">01</span><span class="bar"></span>El sistema</div>
+  <h2>Trece repos, cuatro runtimes,<br /><em>una sola firma</em></h2>
+  <p>Esto no es un repo con un asistente. Son <strong>13 repos, cuatro runtimes de agente y dos proveedores de modelo</strong>, con una sola persona que aprueba. El trabajo entra por una de tres lanes y todo lo que puede romper algo vuelve a la misma firma.</p>
+
+  <figure>
+    <div class="fw">
+      <svg viewBox="0 0 1000 470" role="img" aria-label="Diagrama: el trabajo entra por tres lanes, pasa por las compuertas y vuelve al principal" style="min-width:820px">
+        <!-- entrada -->
+        <rect class="sv-box-a" x="14" y="196" width="94" height="58" rx="8"/>
+        <text class="sv-t" x="61" y="220" text-anchor="middle">Vos</text>
+        <text class="sv-l" x="61" y="238" text-anchor="middle">entrada</text>
+
+        <!-- lane 1 -->
+        <rect class="sv-box" x="162" y="24" width="452" height="112" rx="10"/>
+        <text class="sv-a" x="182" y="48">Lane 1 · directa</text>
+        <text class="sv-l" x="594" y="48" text-anchor="end">el 90% de los días</text>
+        <text class="sv-t" x="182" y="76">VS Code → Claude Code → 1 repo</text>
+        <text class="sv-s" x="182" y="99">writer = vos + Claude Code</text>
+        <text class="sv-s" x="182" y="119">los perfiles Hermes miran, no escriben</text>
+
+        <!-- lane 2 -->
+        <rect class="sv-box" x="162" y="158" width="452" height="112" rx="10"/>
+        <text class="sv-a" x="182" y="182">Lane 2 · packet</text>
+        <text class="sv-l" x="594" y="182" text-anchor="end">contrato por escrito</text>
+        <text class="sv-t" x="182" y="210">Telegram → Hermes Main (VPS) → packet</text>
+        <text class="sv-s" x="182" y="233">→ Claude Code → evidencia + veredicto</text>
+        <text class="sv-s" x="182" y="253">el puente VPS→Mac lo cargás vos, a mano</text>
+
+        <!-- lane 3 -->
+        <rect class="sv-box" x="162" y="292" width="452" height="112" rx="10"/>
+        <text class="sv-a" x="182" y="316">Lane 3 · kanban</text>
+        <text class="sv-l" x="594" y="316" text-anchor="end">sin vos en el loop</text>
+        <text class="sv-t" x="182" y="344">bin/task → card → dev (OpenAI)</text>
+        <text class="sv-s" x="182" y="367">en un worktree → reviewer-claude (Anthropic)</text>
+        <text class="sv-s" x="182" y="387">nunca el árbol principal · nunca push</text>
+
+        <!-- flechas entrada → lanes -->
+        <path class="sv-ln-a" d="M108 214 C 132 214, 134 80, 158 80"/>
+        <path class="sv-ln-a" d="M108 225 L 158 214"/>
+        <path class="sv-ln-a" d="M108 236 C 132 236, 134 348, 158 348"/>
+        <polygon fill="#8f9c6c" points="158,80 150,76 150,84"/>
+        <polygon fill="#8f9c6c" points="158,214 150,210 150,218"/>
+        <polygon fill="#8f9c6c" points="158,348 150,344 150,352"/>
+
+        <!-- lanes → compuertas -->
+        <path class="sv-ln" d="M614 80 C 648 80, 652 190, 686 190"/>
+        <path class="sv-ln" d="M614 214 L 686 214"/>
+        <path class="sv-ln" d="M614 348 C 648 348, 652 238, 686 238"/>
+
+        <!-- compuertas -->
+        <rect class="sv-box-h" x="690" y="158" width="184" height="112" rx="10"/>
+        <text class="sv-a" x="708" y="182" style="fill:#f5a623">■ Compuertas</text>
+        <text class="sv-s" x="708" y="208">push · deploy · secretos</text>
+        <text class="sv-s" x="708" y="228">merge · writer lock</text>
+        <text class="sv-s" x="708" y="248">comms externas</text>
+
+        <!-- compuertas → vos -->
+        <path class="sv-ln-a" d="M874 214 L 924 214"/>
+        <polygon fill="#8f9c6c" points="930,214 920,209 920,219"/>
+        <rect class="sv-box-a" x="906" y="186" width="86" height="56" rx="8"/>
+        <text class="sv-t" x="949" y="210" text-anchor="middle">Vos</text>
+        <text class="sv-l" x="949" y="228" text-anchor="middle">decisión</text>
+
+        <!-- retorno -->
+        <path class="sv-ln-d" d="M949 242 L 949 440 L 61 440 L 61 258"/>
+        <polygon fill="rgba(244,243,241,0.22)" points="61,250 56,260 66,260"/>
+        <text class="sv-l" x="505" y="432" text-anchor="middle">aprobar · pedir cambios · abort</text>
+      </svg>
+    </div>
+    <figcaption><span class="fn">D1</span> El sistema · fuente: AW — AGENTIC WORKFORCE / ORCHESTRATION.md (V0.2, 2026-09-22)</figcaption>
+  </figure>
+
+  <h3>Tres hechos que ordenan todo lo demás</h3>
+  <div class="cards">
+    <div class="card"><span class="ix">01</span><div class="t">Un escritor activo por repo/branch</div><div class="d">Dos agentes no escriben el mismo árbol. Lane 3 existe porque el worktree le da branch propia a Hermes sin tocar el lock de Lane 1.</div></div>
+    <div class="card"><span class="ix">02</span><div class="t">El revisor nunca es del mismo proveedor</div><div class="d">Claude revisando a Claude no es segunda opinión. Escribe OpenAI → revisa Anthropic, y al revés. Se verifica por packet, no por asignación fija.</div></div>
+    <div class="card"><span class="ix">03</span><div class="t">El repo le gana a la memoria</div><div class="d">Precedencia: repo docs → packet activo → memoria del agente → transcript. Si el chat y el archivo se contradicen, gana el archivo — y corregís el que perdió en la misma sesión.</div></div>
+  </div>
+</section>
+
+<section id="s2">
+  <div class="eyebrow"><span class="n">02</span><span class="bar"></span>Con qué operás</div>
+  <h2>Claude Code, <em>primero</em></h2>
+
+  <div class="tool">
+    <div class="k">La herramienta principal</div>
+    <h4>Claude Code</h4>
+    <p>Todo lo demás es periferia. Corre en la terminal, en la extensión de VS Code, en la app de escritorio y en claude.ai/code. Acá se usa <strong>adentro de un repo por vez</strong>: abrís el repo, Claude lee su <code>CLAUDE.md</code> en el boot, y esa sesión es esa sesión.</p>
+  </div>
+
+  <h3>Lo que tenés que entender, en el orden en que te va a hacer falta</h3>
+  <div class="cards">
+    <div class="card"><span class="ix">01</span><div class="t"><code>CLAUDE.md</code></div><div class="d">El archivo que se auto-carga al abrir el repo. Es la política de esa sesión. Cada repo tiene el suyo.</div></div>
+    <div class="card"><span class="ix">02</span><div class="t">Contexto</div><div class="d">La ventana es finita; las sesiones largas se resumen. Por eso el estado vive en archivos, no en el chat.</div></div>
+    <div class="card"><span class="ix">03</span><div class="t">Skills</div><div class="d">Procedimientos guardados en <code>.claude/skills/</code>. Se invocan con <code>/nombre</code>. Acá hay 14.</div></div>
+    <div class="card"><span class="ix">04</span><div class="t">Subagentes</div><div class="d">Tareas que corren aparte, en su propio contexto, y devuelven sólo la conclusión. Para búsquedas anchas y research.</div></div>
+    <div class="card"><span class="ix">05</span><div class="t">Plan mode</div><div class="d">Modo de sólo lectura donde se diseña antes de tocar nada. Se sale con aprobación explícita.</div></div>
+    <div class="card"><span class="ix">06</span><div class="t">Permisos</div><div class="d">Qué corre sin preguntar. <code>git push</code> pregunta siempre; leer un <code>.env</code> está prohibido.</div></div>
+    <div class="card"><span class="ix">07</span><div class="t">MCP</div><div class="d">Servidores que le dan herramientas externas: Notion, Figma, Gmail, Excalidraw.</div></div>
+    <div class="card"><span class="ix">08</span><div class="t">Modelos y costo</div><div class="d">Opus para razonar, Sonnet para construir, Haiku para volumen. Un agente público en Opus sin tope es dinero real.</div></div>
+  </div>
+
+  <h3>La periferia</h3>
+  <div class="tw"><table>
+    <tr><th>Capa</th><th>Herramienta</th><th>Para qué</th></tr>
+    <tr><td>Código y versión</td><td>Git + GitHub · org <code>COMANDO-AI</code></td><td>Todo vive en repos. <code>gh</code> para operar desde la terminal.</td></tr>
+    <tr><td>Hosting</td><td>Vercel</td><td>comando-ai.com y skins-md. Deploy por CLI, no conectado a Git.</td></tr>
+    <tr><td>Modelos</td><td>Anthropic API · OpenAI (vía Hermes)</td><td>Keys propias. Nunca a disco.</td></tr>
+    <tr><td>Secretos</td><td>1Password + <code>op run</code></td><td>El único almacén. Inyecta en ejecución.</td></tr>
+    <tr><td>Datos y docs</td><td>Notion · Google Workspace</td><td>CRM, leads, documentos. Vía MCP.</td></tr>
+    <tr><td>Diseño</td><td>Figma (MCP) · Excalidraw</td><td>Direcciones visuales, diagramas.</td></tr>
+    <tr><td>QA</td><td>Playwright · Chrome headless</td><td>Nada visual se da por hecho sin screenshot.</td></tr>
+    <tr><td>Agentes de fondo</td><td>Hermes (VPS + Mac)</td><td>Perfiles <code>dev</code>, <code>reviewer-openai</code>, <code>reviewer-claude</code>, <code>infra</code>. Lane 2 y 3.</td></tr>
+  </table></div>
+
+  <div class="note">
+    <div class="tag">Cuentas</div>
+    <p>Las tuyas las abrís <strong>a tu nombre</strong> — Claude, GitHub, Vercel, Anthropic API, Notion, Figma. COMANDO reembolsa. Las cuentas del estudio (1Password compartido, org de GitHub) llegan después del Gate 1.</p>
+  </div>
+</section>
+
+<section id="s3">
+  <div class="eyebrow"><span class="n">03</span><span class="bar"></span>Cómo se mueve el trabajo</div>
+  <h2>Tres lanes. <em>Ninguna</em> es degradada</h2>
+
+  <div class="tw"><table class="lanes">
+    <tr><th></th><th>Lane 1 · Directa</th><th>Lane 2 · Packet</th><th>Lane 3 · Kanban</th></tr>
+    <tr><td>Cuándo</td><td>El día a día</td><td>Cuando el alcance hay que fijarlo por escrito</td><td>Cuando querés que se haga sin vos en el loop</td></tr>
+    <tr><td>Entrada</td><td>Abrís el repo</td><td>Telegram → Hermes Main</td><td><code>bin/task &lt;repo&gt; "título"</code></td></tr>
+    <tr><td>Escribe</td><td>Vos + Claude Code</td><td>Claude Code</td><td><code>dev</code> (Hermes, OpenAI)</td></tr>
+    <tr><td>Dónde</td><td>El árbol principal</td><td>El árbol principal</td><td>Sólo <code>.worktrees/&lt;id&gt;</code></td></tr>
+    <tr><td>Revisa</td><td>—</td><td>Subagente reviewer / <code>reviewer-openai</code></td><td><code>reviewer-claude</code></td></tr>
+    <tr><td>Sale</td><td>Commit (con aprobación)</td><td>Packet cerrado + veredicto</td><td>Branch esperando merge</td></tr>
+    <tr><td>Cierra</td><td>Vos</td><td>Vos</td><td><strong>Vos, a mano. Siempre.</strong></td></tr>
+  </table></div>
+
+  <p><strong>Cómo elegís.</strong> Arrancá siempre por la 1. Un packet se gana su costo cuando el alcance, el riesgo o la continuidad necesitan estar escritos. El kanban es para trabajo delegado, en un repo registrado, donde el resultado correcto es una branch para mergear. Trabajo que arranca directo y resulta más grande deja un <code>WORK_REPORT.md</code> al final, o se gradúa a packet a mitad de camino.</p>
+
+  <h3>El ritmo de una sesión</h3>
+  <div class="rhythm">
+    <div class="st"><div class="h">Abrir</div><ol>
+      <li>Abrir el repo en Claude Code</li>
+      <li>Leer <code>cadence/pulse.md</code> — open, blocked, done</li>
+    </ol></div>
+    <div class="st"><div class="h">Trabajar</div><ol>
+      <li>Decir la intención de la sesión</li>
+      <li>Trabajar — un repo por vez</li>
+    </ol></div>
+    <div class="st"><div class="h">Cerrar</div><ol>
+      <li>Correr <code>upc</code></li>
+      <li>pulse · decision_log · evolution_log · dashboard · commit</li>
+    </ol></div>
+  </div>
+  <p style="margin-top:16px"><code>upc</code> no es opcional. Si la sesión no se cierra, el próximo que abra el repo no sabe qué pasó.</p>
+</section>
+
+<section id="s4">
+  <div class="eyebrow"><span class="n">04</span><span class="bar"></span>Qué te frena</div>
+  <h2>Compuertas, <em>no intenciones</em></h2>
+  <p>Esto no es una lista de buenas prácticas. Son las compuertas del sistema.</p>
+
+  <h3>Requieren aprobación explícita del principal</h3>
+  <div class="tw"><table>
+    <tr><th>Compuerta</th><th>Por qué</th></tr>
+    <tr><td><code>git push</code>, deploy</td><td>Puede llegar a producción. skins-md y comando-ai.com deployan solo.</td></tr>
+    <tr><td>Commits, cuando el packet dice parar antes</td><td>Protocolo, no enforcement. El harness ya no pregunta.</td></tr>
+    <tr><td>Cualquier secreto: leer, sincronizar, imprimir</td><td>Nunca entran a prompts, docs ni reportes.</td></tr>
+    <tr><td>Mergear o pushear una branch de Lane 3</td><td>Siempre a mano. Es el punto del diseño.</td></tr>
+    <tr><td>Reasignar el writer lock</td><td>Cambiar quién escribe un repo es una decisión, no un ajuste.</td></tr>
+    <tr><td>Registrar un repo para Lane 3</td><td>Le abre la puerta a un escritor autónomo.</td></tr>
+    <tr><td>Mutar un VPS, launchd, contenedores</td><td>Infra corriendo.</td></tr>
+    <tr><td>Comunicaciones externas: mail, DMs, posts, facturas</td><td>Salen del estudio. Los drafts van a <code>COMS/</code>.</td></tr>
+    <tr><td>Escribir en <code>context/identity/</code></td><td>Es la identidad. No se toca.</td></tr>
+    <tr><td>Modificar <code>C-OS.md</code> fuera de un incremento de Mark</td><td>Es el boot spec.</td></tr>
+    <tr><td>Onboardear un cliente nuevo</td><td>Compromiso comercial.</td></tr>
+  </table></div>
+
+  <div class="note stop">
+    <div class="tag">Reglas duras, sin excepción</div>
+    <p><strong>Los secretos nunca tocan el disco.</strong> 1Password es el único almacén; <code>op run</code> los inyecta en ejecución. <code>connections/</code> documenta <em>dónde vive</em> una credencial, nunca el valor. Ese es el contrato de auth.</p>
+    <p><strong>Un escritor activo por repo/branch.</strong> Si no está escrito en el registry, no escribís. <strong>Ningún perfil revisa su propio trabajo</strong>, ni el de su mismo proveedor.</p>
+    <p><strong>Evidencia antes de aprobación.</strong> Código: <code>git diff --stat</code> y tests corridos con las fallas a la vista. Visual: screenshot, no "el build pasó". Ops: la ruta del reporte. <strong>Lo que falta se declara faltante.</strong> Nunca se dice hecho sin evidencia.</p>
+  </div>
+</section>
+
+<section id="s5">
+  <div class="eyebrow"><span class="n">05</span><span class="bar"></span>Cómo se lee cualquier repo</div>
+  <h2>Aprendés uno, <em>los leés todos</em></h2>
+  <p>Todos los repos de COMANDO tienen la misma forma: cuatro capas, con un flujo de datos que va de lo vivo a lo durable.</p>
+
+  <figure>
+    <div class="fw">
+      <svg viewBox="0 0 1000 340" role="img" aria-label="Diagrama del modelo 4C: Context, Connections, Capabilities, Cadence" style="min-width:760px">
+        <rect class="sv-box" x="12" y="16" width="232" height="182" rx="10"/>
+        <text class="sv-a" x="32" y="42">Context</text>
+        <text class="sv-l" x="32" y="60">quién sos · estático</text>
+        <text class="sv-s" x="32" y="88">identity/</text><text class="sv-s" x="32" y="110">strategy/</text>
+        <text class="sv-s" x="32" y="132">knowledge/</text><text class="sv-s" x="32" y="154">brand/</text>
+
+        <rect class="sv-box" x="256" y="16" width="232" height="182" rx="10"/>
+        <text class="sv-a" x="276" y="42">Connections</text>
+        <text class="sv-l" x="276" y="60">datos vivos</text>
+        <text class="sv-s" x="276" y="88">TL_* (tools)</text><text class="sv-s" x="276" y="110">APIs · MCPs</text>
+        <text class="sv-s" x="276" y="132">feeds · CRM</text>
+
+        <rect class="sv-box" x="512" y="16" width="232" height="182" rx="10"/>
+        <text class="sv-a" x="532" y="42">Capabilities</text>
+        <text class="sv-l" x="532" y="60">qué podés hacer</text>
+        <text class="sv-s" x="532" y="88">AG_* (agents)</text><text class="sv-s" x="532" y="110">WF_* (workflows)</text>
+        <text class="sv-s" x="532" y="132">skills/REGISTRY</text>
+
+        <rect class="sv-box" x="756" y="16" width="232" height="182" rx="10"/>
+        <text class="sv-a" x="776" y="42">Cadence</text>
+        <text class="sv-l" x="776" y="60">qué corre solo</text>
+        <text class="sv-s" x="776" y="88">pulse.md</text><text class="sv-s" x="776" y="110">decision_log.md</text>
+        <text class="sv-s" x="776" y="132">evolution_log.md</text><text class="sv-s" x="776" y="154">routines · dashboard</text>
+
+        <!-- llaves -->
+        <path class="sv-ln" d="M12 214 L 12 226 L 488 226 L 488 214"/>
+        <text class="sv-l" x="250" y="246" text-anchor="middle">armar el segundo cerebro</text>
+        <path class="sv-ln" d="M512 214 L 512 226 L 988 226 L 988 214"/>
+        <text class="sv-l" x="750" y="246" text-anchor="middle">hacerlo un OS</text>
+
+        <!-- flujo de datos -->
+        <text class="sv-a" x="12" y="296">Flujo de datos</text>
+        <text class="sv-t" x="240" y="296" text-anchor="middle">Connections</text>
+        <text class="sv-l" x="240" y="318" text-anchor="middle">intake vivo</text>
+        <path class="sv-ln-a" d="M318 291 L 452 291"/>
+        <polygon fill="#8f9c6c" points="458,291 448,286 448,296"/>
+        <text class="sv-t" x="540" y="296" text-anchor="middle">Capability</text>
+        <text class="sv-l" x="540" y="318" text-anchor="middle">destilación</text>
+        <path class="sv-ln-a" d="M618 291 L 752 291"/>
+        <polygon fill="#8f9c6c" points="758,291 748,286 748,296"/>
+        <text class="sv-t" x="848" y="296" text-anchor="middle">Context</text>
+        <text class="sv-l" x="848" y="318" text-anchor="middle">residuo durable</text>
+      </svg>
+    </div>
+    <figcaption><span class="fn">D2</span> El modelo 4C · canon/spec/4C.md</figcaption>
+  </figure>
+
+  <p>Dos ejes que no chocan: <strong>4C dice dónde vive un archivo. AREA dice qué hace.</strong></p>
+
+  <div class="tw"><table>
+    <tr><th>Pieza</th><th>Regla</th></tr>
+    <tr><td>IDs</td><td><code>KIND_AREA_ROLE</code>. KIND ∈ {AG, WF, TL}. AREA ∈ {CORE, WEB, MKT, LAB, CANON}. <strong>El nombre del archivo <em>es</em> el ID.</strong></td></tr>
+    <tr><td>Frontmatter</td><td>Todo archivo operativo abre con YAML: <code>status</code>, <code>owner</code>, <code>updated</code>.</td></tr>
+    <tr><td>Prosa</td><td><code>kebab-case.md</code>.</td></tr>
+    <tr><td>Charter vs OS layer</td><td>Charter = <code>CLAUDE.md</code> + <code>.claude/</code>, el runtime, fijo. OS layer = el contenido 4C + <code>C-OS.md</code>, versionado por <strong>Mark</strong>.</td></tr>
+  </table></div>
+
+  <p><strong>Por qué esta forma.</strong> Un <em>harness</em> es la capa que decide qué ve un modelo y qué puede hacer. No se toca el modelo: se escribe el harness. Cada <code>.md</code> del repo es parte del harness. El <strong>Canon</strong> es el meta-harness — el harness que construye harnesses.</p>
+
+  <div class="note stop">
+    <div class="tag">Estado del repo, hoy</div>
+    <p><code>C-OS.md</code> dice <strong>Mark IV</strong>. El reencuadre a fábrica agéntica está acordado (<em>decision_log</em>, 2026-09-22) y sin escribir. El repo está a mitad de camino entre dos Marks. Escribir el Mark V es trabajo abierto.</p>
+  </div>
+</section>
+
+<section id="s6">
+  <div class="eyebrow"><span class="n">06</span><span class="bar"></span>Qué vendemos</div>
+  <h2>Un método, <em>no horas</em></h2>
+  <p>COMANDO es una <strong>fábrica agéntica</strong>: capacidades, agentes y sistemas operativos completos. Dos capas — A (thinktank) aguas arriba, B (servicios) aguas abajo; B mantiene viva a A. Dos caras: <strong>comando-ai.com</strong> (el AI OS productizado) y <strong>comando.live</strong> (el estudio creativo).</p>
+
+  <figure>
+    <div class="fw">
+      <svg viewBox="0 0 1000 150" role="img" aria-label="El método: Diagnose, Design, Deploy" style="min-width:680px">
+        <rect class="sv-box" x="12" y="20" width="296" height="108" rx="10"/>
+        <text class="sv-a" x="32" y="46">Diagnose</text>
+        <text class="sv-s" x="32" y="72">auditar la operación real</text>
+        <text class="sv-s" x="32" y="92">del cliente contra 4C</text>
+        <text class="sv-n" x="32" y="116">→ gap map</text>
+
+        <rect class="sv-box" x="352" y="20" width="296" height="108" rx="10"/>
+        <text class="sv-a" x="372" y="46">Design</text>
+        <text class="sv-s" x="372" y="72">mapear al cliente en 4C:</text>
+        <text class="sv-s" x="372" y="92">sus agentes, workflows,</text>
+        <text class="sv-s" x="372" y="112">conexiones</text>
+
+        <rect class="sv-box-a" x="692" y="20" width="296" height="108" rx="10"/>
+        <text class="sv-a" x="712" y="46">Deploy</text>
+        <text class="sv-s" x="712" y="72">stampear el repo, llenarlo,</text>
+        <text class="sv-s" x="712" y="92">cablear, setear cadencia,</text>
+        <text class="sv-s" x="712" y="112">canon-lint, entregar</text>
+
+        <path class="sv-ln-a" d="M308 74 L 342 74"/><polygon fill="#8f9c6c" points="348,74 338,69 338,79"/>
+        <path class="sv-ln-a" d="M648 74 L 682 74"/><polygon fill="#8f9c6c" points="688,74 678,69 678,79"/>
+      </svg>
+    </div>
+    <figcaption><span class="fn">D3</span> El método · canon/method/WF_CANON_DEPLOY.md</figcaption>
+  </figure>
+
+  <h3>Los tiers, y dónde está el trabajo FDE</h3>
+  <div class="tw"><table>
+    <tr><th>Tier</th><th>Precio</th><th>Qué es</th><th>¿Delivery embebido?</th></tr>
+    <tr><td>AI OS Diagnostic</td><td class="num">$1,900</td><td>Auditoría de alcance fijo + mapa de oportunidades</td><td class="no">No — es adquisición</td></tr>
+    <tr><td>AI OS Build</td><td class="num">$14,000</td><td>Un stack agéntico diseñado y deployado</td><td class="yes">Sí</td></tr>
+    <tr><td>AI OS Custom</td><td class="num">desde $50,000</td><td>El OS completo, a medida</td><td class="yes">Sí</td></tr>
+    <tr><td>AI OS Operations</td><td class="num">$2,500 / mes</td><td>Lo corremos, monitoreamos e iteramos</td><td class="yes">Recurrente</td></tr>
+  </table></div>
+
+  <figure>
+    <div class="fw">
+      <svg viewBox="0 0 1000 250" role="img" aria-label="Gráfico: los tiers contra el umbral donde el delivery embebido cierra" style="min-width:680px">
+        <!-- umbral -->
+        <line x1="330" y1="24" x2="330" y2="200" stroke="#f5a623" stroke-width="1.2" stroke-dasharray="4 4"/>
+        <text class="sv-a" x="342" y="38" style="fill:#f5a623">■ umbral del delivery embebido</text>
+        <text class="sv-l" x="342" y="54">por debajo, la matemática no cierra</text>
+
+        <!-- eje -->
+        <line x1="180" y1="200" x2="980" y2="200" class="sv-ln"/>
+
+        <!-- barras -->
+        <rect x="180" y="72" width="58" height="22" rx="3" fill="rgba(245,166,35,0.5)"/>
+        <text class="sv-n" x="248" y="88">$1,900</text>
+        <text class="sv-s" x="20" y="88">Diagnostic</text>
+        <text class="sv-l" x="358" y="88">el bootcamp · 3–5 días con data real del cliente</text>
+
+        <rect x="180" y="110" width="255" height="22" rx="3" fill="rgba(143,156,108,0.55)"/>
+        <text class="sv-n" x="445" y="126">$14,000</text>
+        <text class="sv-s" x="20" y="126">Build</text>
+        <text class="sv-l" x="530" y="126">acá empieza el trabajo FDE</text>
+
+        <rect x="180" y="148" width="700" height="22" rx="3" fill="rgba(143,156,108,0.85)"/>
+        <text class="sv-n" x="890" y="164">$50,000 +</text>
+        <text class="sv-s" x="20" y="164">Custom</text>
+
+        <text class="sv-l" x="180" y="222">escala de contrato →</text>
+      </svg>
+    </div>
+    <figcaption><span class="fn">D4</span> Los tiers contra el umbral · escala no lineal, sólo ilustrativa</figcaption>
+  </figure>
+
+  <p>El Diagnostic está debajo de la línea <strong>a propósito</strong>: es el bootcamp — tres a cinco días con la data real del cliente, software funcionando al final, no demos. Es el instrumento de entrada. Vender el Diagnostic como delivery embebido es la forma más rápida de perder plata. Todo engagement arranca en una discovery call de 30 minutos; no hay checkout online.</p>
+</section>
+
+<section id="s7">
+  <div class="eyebrow"><span class="n">07</span><span class="bar"></span>Tu rol</div>
+  <h2>Forward Deployed <em>Engineer</em></h2>
+  <p>Todos acá trabajan como FDE. Es la descripción precisa de lo que ya se hace. El documento canónico de Palantir define el rol en una línea:</p>
+
+  <blockquote>
+    <p>El foco de un Dev es "una capacidad, muchos clientes". El de un Delta es "un cliente, muchas capacidades".</p>
+    <cite>Palantir · Dev versus Delta</cite>
+  </blockquote>
+
+  <p>Eso es exactamente la relación entre una instancia y el Canon. Tirás un camino rápido y sucio para un cliente; cuando el mismo camino se tiró tres veces, se pavimenta en producto.</p>
+
+  <figure>
+    <div class="fw">
+      <svg viewBox="0 0 1000 300" role="img" aria-label="Diagrama: instancias de cliente convergen en el Canon, que produce instancias nuevas ya pavimentadas" style="min-width:780px">
+        <text class="sv-l" x="12" y="24">un cliente, muchas capacidades</text>
+        <text class="sv-l" x="988" y="24" text-anchor="end">una capacidad, muchos clientes</text>
+        <line x1="12" y1="34" x2="300" y2="34" class="sv-ln"/>
+        <line x1="700" y1="34" x2="988" y2="34" class="sv-ln"/>
+
+        <rect class="sv-box" x="12" y="62" width="180" height="46" rx="8"/>
+        <text class="sv-t" x="30" y="83">instancia A</text><text class="sv-l" x="30" y="99">camino de ripio</text>
+        <rect class="sv-box" x="12" y="124" width="180" height="46" rx="8"/>
+        <text class="sv-t" x="30" y="145">instancia B</text><text class="sv-l" x="30" y="161">camino de ripio</text>
+        <rect class="sv-box" x="12" y="186" width="180" height="46" rx="8"/>
+        <text class="sv-t" x="30" y="207">instancia C</text><text class="sv-l" x="30" y="223">camino de ripio</text>
+
+        <path class="sv-ln" d="M192 85 C 250 85, 250 147, 308 147"/>
+        <path class="sv-ln" d="M192 147 L 308 147"/>
+        <path class="sv-ln" d="M192 209 C 250 209, 250 147, 308 147"/>
+        <text class="sv-a" x="250" y="112" text-anchor="middle">se repite</text>
+        <text class="sv-a" x="250" y="128" text-anchor="middle">3 veces</text>
+
+        <rect class="sv-box-a" x="312" y="96" width="290" height="102" rx="10"/>
+        <text class="sv-a" x="334" y="124">El Canon</text>
+        <text class="sv-t" x="334" y="150">la autopista pavimentada</text>
+        <text class="sv-s" x="334" y="172">el meta-harness: el harness</text>
+        <text class="sv-s" x="334" y="190">que construye harnesses</text>
+
+        <path class="sv-ln-a" d="M602 147 L 700 147"/><polygon fill="#8f9c6c" points="706,147 696,142 696,152"/>
+        <rect class="sv-box" x="710" y="112" width="200" height="70" rx="8"/>
+        <text class="sv-t" x="730" y="140">instancia D</text>
+        <text class="sv-l" x="730" y="158">arranca pavimentada</text>
+
+        <!-- curva de reutilización -->
+        <text class="sv-a" x="12" y="260">% reutilizable</text>
+        <line x1="150" y1="256" x2="940" y2="256" class="sv-ln"/>
+        <circle cx="240" cy="256" r="4" fill="#8f9c6c"/><text class="sv-n" x="240" y="280" text-anchor="middle">~20%</text>
+        <text class="sv-l" x="240" y="242" text-anchor="middle">1er engagement</text>
+        <circle cx="560" cy="256" r="4" fill="#8f9c6c"/><text class="sv-n" x="560" y="280" text-anchor="middle">~50%</text>
+        <text class="sv-l" x="560" y="242" text-anchor="middle">tras 2–3 iteraciones</text>
+        <circle cx="870" cy="256" r="5.5" fill="#8f9c6c"/><text class="sv-n" x="870" y="280" text-anchor="middle">producto</text>
+        <text class="sv-l" x="870" y="242" text-anchor="middle">patrón validado</text>
+      </svg>
+    </div>
+    <figcaption><span class="fn">D5</span> El loop FDE · instancia → Canon · <em>metabolize pain, excrete product</em></figcaption>
+  </figure>
+
+  <h3>Qué significa en la práctica</h3>
+  <div class="tw"><table>
+    <tr><th>Rasgo</th><th>Qué implica</th></tr>
+    <tr><td>La ambigüedad es el default</td><td>No vas a recibir requerimientos claros. Los descubrís construyendo, adentro.</td></tr>
+    <tr><td>Alta agencia</td><td>Es el primer rasgo que pide Anthropic para el puesto, antes que cualquier requisito técnico.</td></tr>
+    <tr><td>Rango en un mismo día</td><td>Debuggear con el equipo técnico a la mañana, explicar un tradeoff de alcance a un director a la tarde.</td></tr>
+    <tr><td>Velocidad, con deuda como moneda</td><td>Se entrega en semanas. Generalizar es otra etapa.</td></tr>
+    <tr><td>La métrica no son horas</td><td>Es cuánto de lo que construiste volvió al Canon. <strong>Utilización alta es alarma</strong>, no logro.</td></tr>
+  </table></div>
+
+  <div class="note stop">
+    <div class="tag">Las dos trampas</div>
+    <p>Si el trabajo a medida no se convierte sistemáticamente en algo reutilizable, esto es consultoría con otro nombre.</p>
+    <p>Por debajo de cinco cifras bajas, la matemática no cierra. Ver §6.</p>
+  </div>
+</section>
+
+<section id="s8">
+  <div class="eyebrow"><span class="n">08</span><span class="bar"></span>El programa</div>
+  <h2>Tres etapas, <em>sin fechas</em></h2>
+  <p>Cada una cierra con un artefacto real y un gate. El eje es <strong>deployá y aprendé lo que te falta para deployar</strong>, no <em>estudiá y después deployá</em>.</p>
+
+  <figure>
+    <div class="fw">
+      <svg viewBox="0 0 1000 200" role="img" aria-label="El programa: tres etapas separadas por gates, que desembocan en el Canon" style="min-width:820px">
+        <line x1="40" y1="92" x2="960" y2="92" class="sv-ln"/>
+
+        <rect class="sv-box" x="16" y="44" width="216" height="96" rx="10"/>
+        <text class="sv-a" x="36" y="70">Etapa 1</text>
+        <text class="sv-t" x="36" y="96">Tu propio sistema</text>
+        <text class="sv-s" x="36" y="118">instancia desde el templater</text>
+
+        <path d="M266 92 l 17 -17 l 17 17 l -17 17 z" fill="rgba(143,156,108,0.13)" stroke="#8f9c6c" stroke-width="1.2"/>
+        <text class="sv-a" x="283" y="146" text-anchor="middle">Gate 1</text>
+        <text class="sv-l" x="283" y="164" text-anchor="middle">escritura en C-OS</text>
+
+        <rect class="sv-box" x="334" y="44" width="216" height="96" rx="10"/>
+        <text class="sv-a" x="354" y="70">Etapa 2</text>
+        <text class="sv-t" x="354" y="96">Go-to-market</text>
+        <text class="sv-s" x="354" y="118">campaña viva · leads reales</text>
+
+        <path d="M584 92 l 17 -17 l 17 17 l -17 17 z" fill="rgba(143,156,108,0.13)" stroke="#8f9c6c" stroke-width="1.2"/>
+        <text class="sv-a" x="601" y="146" text-anchor="middle">Gate 2</text>
+        <text class="sv-l" x="601" y="164" text-anchor="middle">leads en el CRM</text>
+
+        <rect class="sv-box" x="652" y="44" width="216" height="96" rx="10"/>
+        <text class="sv-a" x="672" y="70">Etapa 3</text>
+        <text class="sv-t" x="672" y="96">Cliente real</text>
+        <text class="sv-s" x="672" y="118">engagement + research</text>
+
+        <path d="M902 92 l 17 -17 l 17 17 l -17 17 z" fill="rgba(143,156,108,0.13)" stroke="#8f9c6c" stroke-width="1.2"/>
+        <text class="sv-a" x="919" y="146" text-anchor="middle">Gate 3</text>
+        <text class="sv-l" x="919" y="164" text-anchor="middle">qué vuelve al Canon</text>
+
+        <path class="sv-ln-d" d="M936 92 L 976 92 L 976 24 L 24 24 L 24 44"/>
+        <polygon fill="rgba(244,243,241,0.22)" points="24,52 19,42 29,42"/>
+        <text class="sv-l" x="500" y="18" text-anchor="middle">el loop FDE: lo que aprendiste vuelve al Canon</text>
+      </svg>
+    </div>
+    <figcaption><span class="fn">D6</span> El programa · gates, no fechas</figcaption>
+  </figure>
+
+  <div class="stages">
+    <article class="stage">
+      <div class="hd"><span class="ix">01</span><h4>Tu propio sistema</h4></div>
+      <p><strong>Entregable:</strong> tu propia instancia de C-OS. Un repo tuyo, stampeado de <code>COMANDO-AI/c-os-templater</code>, lleno con tu 4C real. Aprendés el producto construyéndotelo a vos mismo.</p>
+      <div class="tw"><table>
+        <tr><th>Bloque</th><th>Dónde te lo topás</th></tr>
+        <tr><td>Git / GitHub</td><td><code>gh repo create &lt;org&gt;/&lt;nombre&gt; --template COMANDO-AI/c-os-templater --private</code></td></tr>
+        <tr><td>Claude Code</td><td>Operar tu instancia: sesión, <code>CLAUDE.md</code>, skills, subagentes, plan mode</td></tr>
+        <tr><td>Tokens y costo</td><td>Elegir modelo por tarea; entender por qué un agente público en Opus es caro</td></tr>
+        <tr><td>APIs y claves</td><td>Cablear tu primera Connection con <code>op run</code></td></tr>
+        <tr><td>Markdown como código</td><td>Escribir tu primer <code>AG_</code>, <code>WF_</code>, <code>TL_</code> con frontmatter e ID correcto</td></tr>
+      </table></div>
+      <h3 style="margin-top:22px">Primeras tareas reales — nada inventado</h3>
+      <ul class="todo">
+        <li><code>README.md</code>, <code>canon/README.md</code> y <code>WF_CANON_DEPLOY.md</code> describen las instancias como subdirectorios <code>clients/&lt;name&gt;/</code>; el Mark IV §5 ya las movió a repos standalone.</li>
+        <li>El skill <code>upc</code> está en <code>.claude/skills/</code> pero falta en <code>capabilities/skills/REGISTRY.md</code>.</li>
+        <li><code>TL_CORE_MCP</code> sigue marcado <em>"Pending inventory"</em> mientras el runtime ya corre Notion, Figma y Excalidraw.</li>
+      </ul>
+      <div class="gate"><div class="lab">Gate 1</div>
+        <p>Tu instancia bootea (<code>CLAUDE.md</code> → spec → pulse resuelve) · al menos un <code>AG_</code>, un <code>WF_</code> y un <code>TL_</code> propios funcionando · una Connection autenticada con <code>op</code> · una rutina de cadencia · una tarea de deuda cerrada. <strong>Al pasar: acceso de escritura al C-OS de COMANDO.</strong></p></div>
+    </article>
+
+    <article class="stage">
+      <div class="hd"><span class="ix">02</span><h4>Go-to-market</h4></div>
+      <p><strong>Entregable:</strong> una campaña viva, instrumentada, con pipeline real de conversaciones.</p>
+      <p>No se rehace lo que existe: comando-ai.com, el AI Readiness Test como lead magnet, el deck de pitch, el Canon como método. El playbook técnico ya está investigado — Stripe, Meta y Google Ads por MCP, GA4, Notion como CRM, y qué se automatiza contra qué se gatea. Trabajás bajo <code>AG_MKT_CMO</code>, <code>AG_MKT_GROWTH</code> y <code>AG_MKT_CONTENT</code>.</p>
+      <p><strong>Primera tarea acotada: cerrar la captura de leads del readiness test.</strong> El test está vivo, pero el mail y el CRM skipean en silencio — hoy no se guarda ni un lead. Chico, verificable, y te obliga a tocar DNS, variables de entorno, Resend y Notion.</p>
+      <div class="gate"><div class="lab">Gate 2</div>
+        <p>Campaña viva · leads que efectivamente aterrizan en el CRM · registro honesto de qué funcionó y qué no en <code>cadence/decision_log.md</code>.</p></div>
+    </article>
+
+    <article class="stage">
+      <div class="hd"><span class="ix">03</span><h4>Cliente real</h4></div>
+      <p><strong>Entregable:</strong> un engagement corrido de punta a punta, con vos como FDE, más un output de Layer A.</p>
+      <p>El cliente es el que trajiste vos en la etapa 2. Corrés <code>WF_CANON_DEPLOY</code> completo. El principal acompaña; vos conducís.</p>
+      <p><strong>El acceso a los datos del cliente es el camino crítico</strong>, y es donde mueren los proyectos — ocho a doce semanas peleando por acceso y la última semana corriendo para tener algo que mostrar. Se arranca el día cero.</p>
+      <p>En paralelo, research: un proyecto de Layer A con el skill <code>researcher</code>. Esto es lo que hace que sea un lab y no una consultora.</p>
+      <div class="gate"><div class="lab">Gate 3</div>
+        <p>La instancia del cliente bootea y pasa canon-lint · una research registrada · una propuesta escrita tuya sobre <strong>qué de este engagement debería volver al Canon</strong>. Ese último punto es el gate de verdad.</p></div>
+    </article>
+  </div>
+</section>
+
+<section id="s9">
+  <div class="eyebrow"><span class="n">09</span><span class="bar"></span>Referencia</div>
+  <h2>Dónde está <em>cada cosa</em></h2>
+
+  <div class="tw"><table>
+    <tr><th>Necesitás</th><th>Está en</th></tr>
+    <tr><td>Qué es COMANDO, cómo se rutea el trabajo</td><td><code>C-OS.md</code></td></tr>
+    <tr><td>La política de la sesión</td><td><code>CLAUDE.md</code> (auto-cargado)</td></tr>
+    <tr><td>Por qué el repo tiene esta forma</td><td><code>canon/spec/harness-theory.md</code> · <code>canon/spec/4C.md</code></td></tr>
+    <tr><td>El método que se vende</td><td><code>canon/method/WF_CANON_DEPLOY.md</code> + las 3 worksheets</td></tr>
+    <tr><td>Qué está abierto ahora</td><td><code>cadence/pulse.md</code></td></tr>
+    <tr><td>Por qué se decidió algo</td><td><code>cadence/decision_log.md</code></td></tr>
+    <tr><td>Procedimientos recurrentes</td><td><code>cadence/runbook.md</code></td></tr>
+    <tr><td>Qué skill hace qué</td><td><code>capabilities/skills/REGISTRY.md</code></td></tr>
+    <tr><td>Qué herramienta está autorizada</td><td><code>connections/TL_CORE_INVENTORY.md</code></td></tr>
+    <tr><td>Cómo operan los agentes y los repos</td><td><code>AW - AGENTIC WORKFORCE/ORCHESTRATION.md</code> · <code>docs/agents.md</code> · <code>docs/repos.md</code></td></tr>
+  </table></div>
+
+  <h3>Qué leer</h3>
+  <ol class="read">
+    <li><a href="https://nabeelqu.co/reflections-on-palantir">Nabeel Qureshi — <em>Reflections on Palantir</em></a> — ocho años como FDE. Empezá acá.</li>
+    <li><a href="https://blog.palantir.com/dev-versus-delta-demystifying-engineering-roles-at-palantir-ad44c2a6e87">Palantir — <em>Dev versus Delta</em></a> — la fuente primaria del rol.</li>
+    <li><a href="https://www.barry.ooo/posts/fde-culture">Barry McCardel — <em>Understanding "Forward Deployed Engineering"</em></a> — el contrapeso. Se lee justo después del 1.</li>
+    <li><a href="https://a16z.com/services-led-growth/">a16z — <em>Trading Margin for Moat</em></a> — el argumento comercial.</li>
+    <li><a href="https://builders.ramp.com/post/forward-deployed-engineering">Ramp — <em>Forward Deployed Engineering</em></a> — cómo se opera fuera de Palantir.</li>
+  </ol>
+
+  <h3>Glosario</h3>
+  <div class="tw"><table class="gloss">
+    <tr><th>Término</th><th>Qué es</th></tr>
+    <tr><td>Charter</td><td>CLAUDE.md + .claude/. La capa de runtime, fija.</td></tr>
+    <tr><td>Boot spec</td><td>C-OS.md. La lógica del OS, versionada por Mark.</td></tr>
+    <tr><td>Mark</td><td>La versión del boot spec (hoy M4).</td></tr>
+    <tr><td>Harness</td><td>La capa que gobierna el entorno de información de un modelo.</td></tr>
+    <tr><td>Meta-harness</td><td>Un harness que construye harnesses. El Canon.</td></tr>
+    <tr><td>Instance</td><td>Un harness stampeado. COMANDO es la #0.</td></tr>
+    <tr><td>4C</td><td>Context · Connections · Capabilities · Cadence.</td></tr>
+    <tr><td>WAT</td><td>Workflows · Agents · Tools.</td></tr>
+    <tr><td>AG / WF / TL</td><td>Los tres KIND de la stack. El filename es el ID.</td></tr>
+    <tr><td>AREA</td><td>CORE · WEB · MKT · LAB · CANON. Qué hace, no a quién reporta.</td></tr>
+    <tr><td>Lane 1 / 2 / 3</td><td>Directa · packet · kanban. Ver §3.</td></tr>
+    <tr><td>Writer lock</td><td>Quién puede escribir un repo/branch. Uno solo por vez.</td></tr>
+    <tr><td>Worktree</td><td>Árbol de trabajo paralelo de git. Le da branch propia a un agente sin tocar el árbol principal.</td></tr>
+    <tr><td>Packet</td><td>La unidad de trabajo de Lane 2. Un archivo, una pantalla.</td></tr>
+    <tr><td>Gate</td><td>Un punto donde el principal firma antes de seguir.</td></tr>
+    <tr><td>Pulse</td><td>cadence/pulse.md. Open · blocked · done.</td></tr>
+    <tr><td>Decision log</td><td>Decisiones load-bearing, fechadas. Append-only.</td></tr>
+    <tr><td>Evolution log</td><td>El changelog de las capacidades de Comander.</td></tr>
+    <tr><td>Comander</td><td>El agente orquestador. Un rol, no un modelo.</td></tr>
+    <tr><td>Canon-lint</td><td>El chequeo de que una instancia no tiene contenido de otro.</td></tr>
+    <tr><td>FDE</td><td>Forward Deployed Engineer. El rol de todos acá.</td></tr>
+    <tr><td>Productization rate</td><td>Cuánto de un engagement volvió al producto. La métrica real.</td></tr>
+    <tr><td>op run</td><td>El comando de 1Password que inyecta secretos sin escribirlos a disco.</td></tr>
+    <tr><td>upc</td><td>El skill de cierre de sesión.</td></tr>
+  </table></div>
+</section>
+
+</main>
+
+<footer>
+  <span>COMANDO · Buenos Aires · 2026</span>
+  <span>Documento operativo · v0.2</span>
+</footer>
+
+<script>
+  (function(){
+    var fill=document.getElementById('fill'), sec=document.getElementById('sec');
+    var names={s1:'01 · El sistema',s2:'02 · Con qué operás',s3:'03 · Cómo se mueve el trabajo',
+      s4:'04 · Qué te frena',s5:'05 · Cómo se lee un repo',s6:'06 · Qué vendemos',
+      s7:'07 · Tu rol',s8:'08 · El programa',s9:'09 · Referencia'};
+    var secs=Array.prototype.slice.call(document.querySelectorAll('section'));
+    function onScroll(){
+      var h=document.documentElement.scrollHeight-window.innerHeight;
+      fill.style.width=(h>0?(window.scrollY/h)*100:0).toFixed(2)+'%';
+      var cur='Entrada al estudio';
+      for(var i=0;i<secs.length;i++){ if(secs[i].getBoundingClientRect().top<160){ cur=names[secs[i].id]||cur; } }
+      if(sec.textContent!==cur) sec.textContent=cur;
+    }
+    window.addEventListener('scroll',onScroll,{passive:true});
+    window.addEventListener('resize',onScroll); onScroll();
+    var clock=document.getElementById('clock');
+    function tick(){ try{ clock.textContent=new Intl.DateTimeFormat('es-AR',{
+      timeZone:'America/Argentina/Buenos_Aires',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false
+    }).format(new Date()); }catch(e){ clock.textContent=''; } }
+    tick(); setInterval(tick,1000);
+  })();
+</script>
+</body>
+</html>
