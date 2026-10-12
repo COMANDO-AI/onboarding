@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>COMANDO — Setup del C-OS</title>
+<meta name="description" content="Guía paso a paso para trabajar en el C-OS de COMANDO desde una Mac: instalar, clonar, identificarse y el ritual /startup → /upc." />
+<meta name="robots" content="noindex,nofollow,noarchive,nosnippet" />
+<meta name="googlebot" content="noindex,nofollow" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400;500&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230b0b0c'/%3E%3Cpath d='M16 7l9 9-9 9-9-9z' fill='%238f9c6c'/%3E%3C/svg%3E" />
+<style>
+  /* ============ GREEN-SILVER · Control Surface ============ */
+  :root{
+    --bg:#0b0b0c; --bg-2:#0e0e10; --bg-3:#141416;
+    --fg:#f4f3f1;
+    --mid:rgba(244,243,241,0.58);
+    --faint:rgba(244,243,241,0.34);
+    --rule:rgba(244,243,241,0.10);
+    --rule-med:rgba(244,243,241,0.20);
+    --silver:#bcc2c4;
+    --accent:#8f9c6c;
+    --accent-soft:rgba(143,156,108,0.13);
+    --accent-line:rgba(143,156,108,0.50);
+    --hot:#f5a623;
+    --hot-soft:rgba(245,166,35,0.10);
+    --font-serif:'Cormorant Garamond',Georgia,serif;
+    --font-mono:'Space Mono',ui-monospace,'SF Mono',Menlo,monospace;
+    --font-sans:'DM Sans',-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
+    --maxw:1080px;
+    --gutter:clamp(16px,4.5vw,56px);
+    --radius:16px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg); color:var(--fg); font-family:var(--font-sans); font-weight:300;
+    -webkit-font-smoothing:antialiased; overflow-x:hidden}
+  ::selection{background:var(--accent);color:var(--bg)}
+
+  .bleed{position:fixed; inset:0; z-index:0; pointer-events:none;
+    background:radial-gradient(55% 40% at 82% 6%, rgba(143,156,108,0.14), transparent 70%),
+               radial-gradient(45% 35% at 12% 60%, rgba(120,86,46,0.10), transparent 72%);
+    filter:blur(40px)}
+
+  /* chrome */
+  .chrome{position:fixed; top:0; left:0; right:0; z-index:40; display:flex;
+    justify-content:space-between; align-items:center; gap:12px;
+    padding:12px var(--gutter); font-family:var(--font-mono); font-size:10px;
+    letter-spacing:.18em; text-transform:uppercase; color:var(--mid);
+    background:rgba(11,11,12,0.86); backdrop-filter:blur(12px); border-bottom:1px solid var(--rule)}
+  .chrome .grp{display:flex; align-items:center; gap:12px}
+  .wordmark{color:var(--fg); letter-spacing:.30em}
+  .sep{color:var(--faint)}
+  .tnum{font-variant-numeric:tabular-nums}
+  .live{display:inline-flex; align-items:center; gap:7px; color:var(--accent)}
+  .dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 2.4s ease-out infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(143,156,108,.45)}70%{box-shadow:0 0 0 8px rgba(143,156,108,0)}100%{box-shadow:0 0 0 0 rgba(143,156,108,0)}}
+  .track{position:fixed;top:0;left:0;right:0;height:2px;z-index:41}
+  .fill{height:100%;width:0;background:var(--accent)}
+  .reg{position:fixed;z-index:30;width:20px;height:20px;pointer-events:none;opacity:.45}
+  .reg::before,.reg::after{content:"";position:absolute;background:var(--rule-med)}
+  .reg::before{top:50%;left:0;width:100%;height:1px;transform:translateY(-50%)}
+  .reg::after{left:50%;top:0;height:100%;width:1px;transform:translateX(-50%)}
+  .reg.bl{bottom:20px;left:calc(var(--gutter) - 10px)}
+  .reg.br{bottom:20px;right:calc(var(--gutter) - 10px)}
+
+  main{position:relative;z-index:10;max-width:var(--maxw);margin:0 auto;padding:0 var(--gutter) 90px}
+
+  /* hero */
+  .hero{padding:118px 0 44px}
+  .display{font-family:var(--font-serif);font-weight:300;
+    font-size:clamp(2.6rem,7.6vw,4.9rem);line-height:.98;letter-spacing:-.025em}
+  .display em{font-style:italic;color:var(--accent)}
+  .lede{font-size:clamp(1rem,1.9vw,1.2rem);line-height:1.5;color:var(--mid);max-width:44ch;margin-top:24px}
+  .lede strong{color:var(--fg);font-weight:400}
+  .meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:28px}
+  .pill{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--silver);border:1px solid var(--rule-med);border-radius:999px;padding:6px 13px}
+  .pill .pd{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--accent);
+    margin-right:7px;vertical-align:middle}
+
+  /* how-to-use strip */
+  .strip{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:38px}
+  .strip .c{border:1px solid var(--rule);border-radius:var(--radius);padding:16px 18px;background:var(--bg-2)}
+  .strip .k{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--accent);margin-bottom:7px}
+  .strip .v{font-size:.9rem;line-height:1.45;color:var(--mid)}
+  .strip .v b{color:var(--fg);font-weight:400}
+
+  /* sections */
+  section{padding:58px 0;border-top:1px solid var(--rule)}
+  .eyebrow{font-family:var(--font-mono);font-size:10px;letter-spacing:.24em;text-transform:uppercase;
+    color:var(--accent);margin-bottom:18px;display:flex;align-items:center;gap:11px}
+  .eyebrow .n{color:var(--faint)}
+  .eyebrow .bar{width:24px;height:1px;background:var(--accent-line)}
+  h2{font-family:var(--font-serif);font-weight:300;font-size:clamp(1.8rem,4.6vw,2.9rem);
+    line-height:1.03;letter-spacing:-.022em;margin-bottom:20px}
+  h2 em{font-style:italic;color:var(--accent)}
+  h3{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--silver);margin:36px 0 13px;font-weight:700}
+  p{font-size:.985rem;line-height:1.62;color:var(--mid);max-width:66ch;margin-bottom:15px}
+  p strong{color:var(--fg);font-weight:400}
+  p em{font-style:italic;color:var(--silver)}
+  code{font-family:var(--font-mono);font-size:.85em;color:var(--silver);
+    background:rgba(244,243,241,0.055);padding:1px 5px;border-radius:4px}
+  a{color:var(--accent);text-decoration:none;border-bottom:1px solid var(--accent-line)}
+  a:hover{color:var(--fg);border-bottom-color:var(--fg)}
+  ul{list-style:none;max-width:66ch;margin-bottom:15px}
+  li{font-size:.985rem;line-height:1.58;color:var(--mid);padding-left:19px;position:relative;margin-bottom:10px}
+  li::before{content:"";position:absolute;left:0;top:.66em;width:7px;height:1px;background:var(--accent-line)}
+  li strong{color:var(--fg);font-weight:400}
+
+  /* figures */
+  figure{margin:26px 0 8px}
+  .fw{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--rule);
+    border-radius:var(--radius);background:var(--bg-2);padding:22px 20px}
+  .fw svg{display:block;width:100%;height:auto}
+  figcaption{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--faint);margin-top:11px;display:flex;gap:9px;align-items:baseline}
+  figcaption .fn{color:var(--accent)}
+  /* svg type */
+  .sv-l{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;fill:var(--faint)}
+  .sv-t{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:400;fill:var(--fg)}
+  .sv-s{font-family:'DM Sans',sans-serif;font-size:11.5px;font-weight:300;fill:var(--mid)}
+  .sv-a{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;fill:var(--accent)}
+  .sv-n{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.1em;fill:var(--silver)}
+  .sv-box{fill:var(--bg-3);stroke:var(--rule-med);stroke-width:1}
+  .sv-box-a{fill:var(--accent-soft);stroke:var(--accent-line);stroke-width:1}
+  .sv-box-h{fill:var(--hot-soft);stroke:rgba(245,166,35,.4);stroke-width:1}
+  .sv-ln{stroke:var(--rule-med);stroke-width:1;fill:none}
+  .sv-ln-a{stroke:var(--accent);stroke-width:1.4;fill:none}
+  .sv-ln-d{stroke:var(--rule-med);stroke-width:1;fill:none;stroke-dasharray:3 4}
+
+  /* tables */
+  .tw{overflow-x:auto;margin:20px 0 6px;-webkit-overflow-scrolling:touch}
+  table{border-collapse:collapse;width:100%;min-width:480px}
+  th{font-family:var(--font-mono);font-size:9px;letter-spacing:.17em;text-transform:uppercase;
+    color:var(--faint);text-align:left;font-weight:400;padding:0 15px 9px 0;
+    border-bottom:1px solid var(--rule-med);white-space:nowrap}
+  td{font-size:.915rem;line-height:1.48;color:var(--mid);padding:12px 15px 12px 0;
+    border-bottom:1px solid var(--rule);vertical-align:top}
+  td:first-child{color:var(--fg);font-weight:400}
+  td.num{font-family:var(--font-mono);font-variant-numeric:tabular-nums;color:var(--silver);
+    font-size:.84rem;white-space:nowrap}
+  td.yes{color:var(--accent)}
+  td.no{color:var(--hot)}
+  .gloss td:first-child,.lanes td:first-child{font-family:var(--font-mono);font-size:.8rem;
+    letter-spacing:.02em;color:var(--silver)}
+  .lanes th:first-child{width:118px}
+
+  /* numbered concept cards */
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(232px,1fr));gap:11px;margin-top:8px}
+  .card{border:1px solid var(--rule);border-radius:var(--radius);padding:17px 18px;background:var(--bg-2)}
+  .card .ix{font-family:var(--font-mono);font-size:10px;letter-spacing:.14em;color:var(--accent);
+    font-variant-numeric:tabular-nums;margin-bottom:8px;display:block}
+  .card .t{font-size:.97rem;color:var(--fg);margin-bottom:6px;font-weight:400}
+  .card .t code{font-size:.9em}
+  .card .d{font-size:.87rem;line-height:1.45;color:var(--mid)}
+
+  /* hero tool card */
+  .tool{border:1px solid var(--accent-line);border-radius:var(--radius);padding:24px 26px;
+    background:linear-gradient(180deg,var(--accent-soft),rgba(20,20,22,.4));margin-bottom:20px}
+  .tool .k{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--accent);margin-bottom:10px}
+  .tool h4{font-family:var(--font-serif);font-weight:300;font-size:clamp(1.5rem,3.6vw,2.1rem);
+    letter-spacing:-.02em;color:var(--fg);margin-bottom:10px}
+  .tool p{margin-bottom:0;max-width:62ch}
+
+  /* note panels */
+  .note{margin:22px 0;padding:18px 22px;border:1px solid var(--rule-med);border-radius:var(--radius);
+    background:rgba(20,20,20,.55)}
+  .note.stop{border-color:rgba(245,166,35,.32)}
+  .note .tag{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--accent);display:flex;align-items:center;gap:8px;margin-bottom:10px}
+  .note.stop .tag{color:var(--hot)}
+  .note.stop .tag::before{content:"\25A0";font-size:8px}
+  .note p{margin:0;max-width:68ch;font-size:.93rem}
+  .note p + p{margin-top:10px}
+
+  /* rhythm strip */
+  .rhythm{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:10px;
+    border:1px solid var(--rule-med);border-radius:var(--radius);overflow:hidden}
+  .rhythm .st{padding:18px 20px;border-right:1px solid var(--rule)}
+  .rhythm .st:last-child{border-right:none}
+  .rhythm .h{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--accent);margin-bottom:11px}
+  .rhythm ol{list-style:none;counter-reset:s}
+  .rhythm li{counter-increment:s;padding-left:22px;margin-bottom:8px;font-size:.88rem;line-height:1.4}
+  .rhythm li::before{content:counter(s);position:absolute;left:0;top:0;width:auto;height:auto;
+    background:none;font-family:var(--font-mono);font-size:9.5px;color:var(--faint)}
+
+  /* stage cards */
+  .stages{display:grid;gap:13px;margin-top:8px}
+  .stage{border:1px solid var(--rule-med);border-radius:var(--radius);padding:24px;background:var(--bg-2)}
+  .stage .hd{display:flex;align-items:baseline;gap:12px;margin-bottom:8px}
+  .stage .ix{font-family:var(--font-mono);font-size:10px;letter-spacing:.18em;color:var(--accent);
+    font-variant-numeric:tabular-nums}
+  .stage h4{font-family:var(--font-serif);font-weight:300;font-size:clamp(1.3rem,3.2vw,1.75rem);
+    line-height:1.1;letter-spacing:-.018em;color:var(--fg)}
+  .stage p{font-size:.94rem;margin-bottom:12px}
+  .todo{list-style:none;margin:14px 0 0}
+  .todo li{padding-left:26px;font-size:.9rem;margin-bottom:9px}
+  .todo li::before{content:"";position:absolute;left:0;top:.18em;width:12px;height:12px;
+    border:1px solid var(--rule-med);border-radius:3px;background:none}
+  .gate{margin-top:17px;padding-top:15px;border-top:1px solid var(--rule)}
+  .gate .lab{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--accent);display:inline-flex;align-items:center;gap:7px;margin-bottom:8px}
+  .gate .lab::before{content:"\25C6";font-size:8px}
+  .gate p{margin:0;font-size:.9rem;max-width:68ch}
+
+  blockquote{margin:24px 0;padding:20px 24px;border-left:2px solid var(--accent);
+    background:var(--accent-soft);border-radius:0 var(--radius) var(--radius) 0}
+  blockquote p{font-family:var(--font-serif);font-size:clamp(1.12rem,2.4vw,1.5rem);line-height:1.32;
+    color:var(--fg);font-style:italic;margin:0;max-width:48ch}
+  blockquote cite{display:block;margin-top:12px;font-family:var(--font-mono);font-style:normal;
+    font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--faint)}
+
+  ol.read{list-style:none;counter-reset:r;max-width:66ch}
+  ol.read li{counter-increment:r;padding-left:34px;margin-bottom:13px;font-size:.95rem}
+  ol.read li::before{content:counter(r,decimal-leading-zero);position:absolute;left:0;top:.06em;
+    font-family:var(--font-mono);font-size:10px;color:var(--faint);background:none;width:auto;height:auto}
+
+  footer{border-top:1px solid var(--rule);padding:30px var(--gutter) 40px;position:relative;z-index:10;
+    max-width:var(--maxw);margin:0 auto;font-family:var(--font-mono);font-size:10px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--faint);display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
+
+  @media (max-width:760px){
+    .strip,.rhythm{grid-template-columns:1fr}
+    .rhythm .st{border-right:none;border-bottom:1px solid var(--rule)}
+    .rhythm .st:last-child{border-bottom:none}
+  }
+  @media (max-width:640px){
+    .chrome .hide-s{display:none}
+    .reg{display:none}
+    .fw{padding:16px 14px}
+    .stage,.tool{padding:20px 18px}
+  }
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.dot{animation:none}}
+
+  /* command blocks (setup) */
+  .cmd{position:relative;margin:16px 0 18px;border:1px solid var(--rule-med);border-radius:12px;
+    background:var(--bg-3);max-width:760px}
+  .cmd pre{margin:0;padding:16px 92px 16px 18px;overflow-x:auto;-webkit-overflow-scrolling:touch;
+    font-family:var(--font-mono);font-size:.82rem;line-height:1.65;color:var(--fg);white-space:pre-wrap;overflow-wrap:anywhere}
+  .cmd .lbl{position:absolute;top:-8px;left:14px;padding:0 7px;background:var(--bg);
+    font-family:var(--font-mono);font-size:8.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--faint)}
+  .copy{position:absolute;top:10px;right:10px;font-family:var(--font-mono);font-size:9px;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--silver);background:transparent;
+    border:1px solid var(--rule-med);border-radius:999px;padding:6px 11px;cursor:pointer}
+  .copy:hover{color:var(--fg);border-color:var(--fg)}
+  .copy.ok{color:var(--accent);border-color:var(--accent-line)}
+  .copy:focus-visible{outline:1px solid var(--accent);outline-offset:2px}
+  ol.steps{list-style:none;counter-reset:st;max-width:66ch;margin-bottom:15px}
+  ol.steps li{counter-increment:st;padding-left:30px}
+  ol.steps li::before{content:counter(st);position:absolute;left:0;top:.2em;width:auto;height:auto;
+    background:none;font-family:var(--font-mono);font-size:10px;color:var(--accent)}
+  kbd{font-family:var(--font-mono);font-size:.8em;color:var(--fg);border:1px solid var(--rule-med);
+    border-bottom-width:2px;border-radius:5px;padding:1px 6px;background:var(--bg-3)}
+  .check{display:inline-block;font-family:var(--font-mono);font-size:9.5px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--accent);margin-right:8px}
+  @media (max-width:640px){ .cmd pre{padding:40px 14px 14px;font-size:.78rem} }
+</style>
+</head>
+<body>
+<div class="bleed" aria-hidden="true"></div>
+<div class="track" aria-hidden="true"><div class="fill" id="fill"></div></div>
+
+<div class="chrome">
+  <div class="grp"><span class="wordmark">COMANDO</span><span class="sep hide-s">/</span>
+    <span class="hide-s" id="sec">Setup del C-OS</span></div>
+  <div class="grp"><span class="hide-s">v01</span><span class="sep hide-s">/</span>
+    <span class="tnum hide-s" id="clock">—</span><span class="sep hide-s">/</span>
+    <span class="live"><span class="dot"></span> Buenos Aires</span></div>
+</div>
+<span class="reg bl" aria-hidden="true"></span><span class="reg br" aria-hidden="true"></span>
+
+<main>
+
+<header class="hero">
+  <h1 class="display">Setup del<br /><em>C-OS</em></h1>
+  <p class="lede"><strong>Se hace una sola vez, en orden.</strong> Al final tenés el repo en tu Mac, Claude Code abierto adentro y el ritual de cada día.</p>
+  <div class="meta">
+    <span class="pill"><span class="pd"></span>Interno</span>
+    <span class="pill">v01 · 2026-10-12</span>
+    <span class="pill">macOS</span>
+  </div>
+  <div class="strip">
+    <div class="c"><div class="k">Una sola vez</div><div class="v">Pasos <b>00 a 05</b>. Cuentas, herramientas, el repo en tu Mac y la primera sesión con Claude.</div></div>
+    <div class="c"><div class="k">Todos los días</div><div class="v">Paso <b>06</b>. <b>/startup</b> al sentarte, <b>/upc</b> al terminar.</div></div>
+    <div class="c"><div class="k">Referencia</div><div class="v">Pasos <b>07 a 09</b>. Qué decide Mariano, qué no viene con el repo y qué hacer si algo falla.</div></div>
+  </div>
+</header>
+
+<section id="s0">
+  <div class="eyebrow"><span class="n">00</span><span class="bar"></span>Antes de empezar</div>
+  <h2>Tres cuentas,<br /><em>un solo mail</em></h2>
+  <p>Todo con tu mail <code>martin.echeverry@comando.live</code>.</p>
+  <div class="cards">
+    <div class="card"><span class="ix">0.1</span><div class="t">Cuenta de Claude</div><div class="d">Pro o Max, en <a href="https://claude.ai" target="_blank" rel="noopener">claude.ai</a>. COMANDO la reembolsa.</div></div>
+    <div class="card"><span class="ix">0.2</span><div class="t">Cuenta de GitHub</div><div class="d">En <a href="https://github.com/signup" target="_blank" rel="noopener">github.com/signup</a>. Pasale tu usuario a Mariano.</div></div>
+    <div class="card"><span class="ix">0.3</span><div class="t">Invitación aceptada</div><div class="d">Mariano te invita a la organización <code>COMANDO-AI</code>. Aceptala desde el mail o en <a href="https://github.com/orgs/COMANDO-AI/invitation" target="_blank" rel="noopener">esta página</a>. Sin esto, los pasos 03 y 05 fallan.</div></div>
+  </div>
+</section>
+
+<section id="s1">
+  <div class="eyebrow"><span class="n">01</span><span class="bar"></span>Instalar</div>
+  <h2>Las herramientas,<br /><em>una sola vez</em></h2>
+  <p>Abrí la <strong>Terminal</strong>: <kbd>⌘</kbd> + <kbd>espacio</kbd>, escribí "Terminal", <kbd>enter</kbd>. Cada bloque de abajo se copia con su botón y se pega en la Terminal.</p>
+  <h3>Homebrew — el instalador de todo lo demás</h3>
+  <div class="cmd"><span class="lbl">Terminal</span><button class="copy" type="button">Copiar</button><pre>/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"</pre></div>
+  <div class="note stop"><div class="tag">Ojo</div><p>Te pide la contraseña de la Mac (no se ve mientras la escribís: es normal). Al terminar imprime dos o tres líneas bajo <strong>"Next steps"</strong>. <strong>Copialas y corrélas</strong>: sin eso, el comando <code>brew</code> no aparece.</p></div>
+  <h3>Git, GitHub CLI, Node y VS Code</h3>
+  <div class="cmd"><span class="lbl">Terminal</span><button class="copy" type="button">Copiar</button><pre>brew install git gh node
+brew install --cask visual-studio-code</pre></div>
+  <h3>Claude Code</h3>
+  <ol class="steps">
+    <li>Abrí <strong>VS Code</strong> (está en Aplicaciones).</li>
+    <li>Ícono de extensiones (<kbd>⇧</kbd><kbd>⌘</kbd><kbd>X</kbd>) → buscá <strong>Claude Code</strong>, de Anthropic → <em>Install</em>.</li>
+    <li>Te pide iniciar sesión: usá tu cuenta de Claude.</li>
+  </ol>
+</section>
+
+<section id="s2">
+  <div class="eyebrow"><span class="n">02</span><span class="bar"></span>GitHub</div>
+  <h2>Conectar tu Mac<br /><em>con GitHub</em></h2>
+  <div class="cmd"><span class="lbl">Terminal</span><button class="copy" type="button">Copiar</button><pre>gh auth login</pre></div>
+  <p>Te hace cuatro preguntas. Respondé:</p>
+  <div class="tw"><table>
+    <tr><th>Pregunta</th><th>Respuesta</th></tr>
+    <tr><td>Where do you use GitHub?</td><td>GitHub.com</td></tr>
+    <tr><td>Preferred protocol</td><td>HTTPS</td></tr>
+    <tr><td>Authenticate Git with your GitHub credentials?</td><td>Yes</td></tr>
+    <tr><td>How would you like to authenticate?</td><td>Login with a web browser — copiá el código, se abre el navegador, pegalo y aceptá.</td></tr>
+  </table></div>
+  <p style="margin-top:18px"><span class="check">Comprobá</span>Tiene que decir <em>Logged in to github.com as</em> y tu usuario.</p>
+  <div class="cmd"><span class="lbl">Terminal</span><button class="copy" type="button">Copiar</button><pre>gh auth status</pre></div>
+</section>
+
+<section id="s3">
+  <div class="eyebrow"><span class="n">03</span><span class="bar"></span>El repo</div>
+  <h2>Bajar el repo<br /><em>a tu Mac</em></h2>
+  <div class="cmd"><span class="lbl">Terminal</span><button class="copy" type="button">Copiar</button><pre>mkdir -p ~/Documents/COMANDO
+cd ~/Documents/COMANDO
+gh repo clone COMANDO-AI/C-OS</pre></div>
+  <p>Queda en <code>Documentos/COMANDO/C-OS</code>. Dejale ese nombre.</p>
+</section>
+
+<section id="s4">
+  <div class="eyebrow"><span class="n">04</span><span class="bar"></span>Identidad</div>
+  <h2>Decirle a git<br /><em>quién sos</em></h2>
+  <div class="cmd"><span class="lbl">Terminal</span><button class="copy" type="button">Copiar</button><pre>git config --global user.name "Juan Martín Echeverry"
+git config --global user.email "martin.echeverry@comando.live"
+git config --global pull.rebase true</pre></div>
+  <div class="note"><div class="tag">Por qué importa</div><p><strong>El mail tiene que ser exactamente ese.</strong> Claude lo busca en el registro del equipo para saber quién está operando. Con otro mail no te reconoce y te pregunta quién sos.</p></div>
+</section>
+
+<section id="s5">
+  <div class="eyebrow"><span class="n">05</span><span class="bar"></span>Primera sesión</div>
+  <h2>Abrir el repo<br /><em>con Claude</em></h2>
+  <ol class="steps">
+    <li>VS Code → <em>File</em> → <em>Open Folder…</em> → <code>Documentos/COMANDO/C-OS</code>.</li>
+    <li>Abrí el panel de Claude Code: el ícono de Claude arriba a la derecha del editor.</li>
+    <li>Escribí:</li>
+  </ol>
+  <div class="cmd"><span class="lbl">Claude Code</span><button class="copy" type="button">Copiar</button><pre>/startup</pre></div>
+  <p>Tiene que saludarte como <strong>J.M.</strong>, decir que está sincronizado con GitHub, contarte qué hay abierto y proponerte por dónde arrancar. Si te llama Mariano o no sabe quién sos, revisá el paso 04.</p>
+  <h3>En esta primera sesión</h3>
+  <p>Pedile esto, y después cerrá con <code>/upc</code>:</p>
+  <div class="cmd"><span class="lbl">Claude Code</span><button class="copy" type="button">Copiar</button><pre>agregá mi usuario de GitHub en context/team.md</pre></div>
+  <p>Es tu primer commit. Mariano lo va a ver en su próximo <code>/startup</code>.</p>
+</section>
+
+<section id="s6">
+  <div class="eyebrow"><span class="n">06</span><span class="bar"></span>Todos los días</div>
+  <h2>El ritual,<br /><em>siempre igual</em></h2>
+  <div class="rhythm">
+    <div class="st"><div class="h">Al sentarte · /startup</div><ol><li>Trae lo último de GitHub.</li><li>Te dice qué hizo Mariano.</li><li>Te propone por dónde arrancar.</li></ol></div>
+    <div class="st"><div class="h">Trabajás</div><ol><li>Con Claude, en el repo.</li><li>Sin ramas, sin aprobaciones.</li><li>Lo que subís, queda.</li></ol></div>
+    <div class="st"><div class="h">Al terminar · /upc</div><ol><li>Anota la sesión con tu nombre.</li><li>Trae lo que Mariano subió mientras tanto.</li><li>Guarda y sube.</li></ol></div>
+  </div>
+  <div class="note stop"><div class="tag">No te vayas sin /upc</div><p>Lo que no llegó a GitHub, Mariano no lo ve. Y cuanto más tiempo pasa sin sincronizar, más fácil es que los dos toquen lo mismo.</p></div>
+  <h3>Si Claude frena por un conflicto</h3>
+  <p>Pasa cuando los dos tocaron las mismas líneas. Claude te muestra las dos versiones y pregunta. Si no sabés cuál va, decile que aborte (no se pierde nada) y hablalo con Mariano. <strong>Nunca le pidas un <em>force push</em>.</strong></p>
+</section>
+
+<section id="s7">
+  <div class="eyebrow"><span class="n">07</span><span class="bar"></span>Autoridad</div>
+  <h2>Podés todo,<br /><em>menos cuatro cosas</em></h2>
+  <p>Podés leer y editar todo el repo. Cuatro tipos de decisión quedan con Mariano, aunque Claude esté trabajando con vos:</p>
+  <div class="cards">
+    <div class="card"><span class="ix">01</span><div class="t">Identidad</div><div class="d">Cambios en <code>context/identity/</code>.</div></div>
+    <div class="card"><span class="ix">02</span><div class="t">Plata</div><div class="d">Gastos, precios, facturas.</div></div>
+    <div class="card"><span class="ix">03</span><div class="t">Comunicaciones externas</div><div class="d">Todo lo que sale del estudio.</div></div>
+    <div class="card"><span class="ix">04</span><div class="t">Clientes nuevos</div><div class="d">Sumar un cliente.</div></div>
+  </div>
+  <p style="margin-top:18px">Si pedís una de esas, Claude te lo dice y lo deja anotado en el pulse para Mariano.</p>
+</section>
+
+<section id="s8">
+  <div class="eyebrow"><span class="n">08</span><span class="bar"></span>Fuera del repo</div>
+  <h2>Lo que no viene<br /><em>con el repo</em></h2>
+  <ul>
+    <li><strong>Claves y credenciales.</strong> Nunca están en el repo: viven en 1Password, y <code>connections/</code> dice dónde está cada una. La bóveda de COMANDO llega en la etapa 3 del onboarding.</li>
+    <li><strong>Deploys.</strong> Los sitios se publican desde cuentas que todavía no tenés. Podés correr todo en tu máquina; publicar, todavía no.</li>
+    <li><strong>Audios y archivos grandes.</strong> No se versionan.</li>
+  </ul>
+</section>
+
+<section id="s9">
+  <div class="eyebrow"><span class="n">09</span><span class="bar"></span>Si algo falla</div>
+  <h2>Problemas<br /><em>comunes</em></h2>
+  <div class="tw"><table>
+    <tr><th>Síntoma</th><th>Qué pasa</th><th>Qué hacer</th></tr>
+    <tr><td><code>brew: command not found</code></td><td>No corriste las líneas de "Next steps".</td><td>Volvé a la salida del instalador y corrélas.</td></tr>
+    <tr><td><code>Repository not found</code> al clonar</td><td>La invitación no está aceptada.</td><td>Paso 0.3.</td></tr>
+    <tr><td>Claude te llama Mariano o no te reconoce</td><td>El mail de git no coincide.</td><td>Paso 04.</td></tr>
+    <tr><td><code>/upc</code> dice que el push fue rechazado</td><td>Mariano subió algo mientras trabajabas.</td><td><code>/upc</code> reintenta solo; si vuelve a fallar, avisá.</td></tr>
+    <tr><td>Claude frena en un conflicto</td><td>Tocaron las mismas líneas.</td><td>Paso 06: abortar y hablar.</td></tr>
+  </table></div>
+  <p style="margin-top:18px">Si un paso no da lo que dice esta página, frená y avisale a Mariano. No improvises con git.</p>
+</section>
+
+</main>
+
+<footer>
+  <span>COMANDO · Buenos Aires · 2026</span>
+  <span>Setup del C-OS · v01</span>
+</footer>
+
+<script>
+  (function(){
+    var fill=document.getElementById('fill'), sec=document.getElementById('sec');
+    var names={s0:'00 · Antes de empezar',s1:'01 · Instalar',s2:'02 · GitHub',s3:'03 · El repo',s4:'04 · Identidad',s5:'05 · Primera sesión',s6:'06 · Todos los días',s7:'07 · Autoridad',s8:'08 · Fuera del repo',s9:'09 · Si algo falla'};
+    var secs=Array.prototype.slice.call(document.querySelectorAll('section'));
+    function onScroll(){
+      var h=document.documentElement.scrollHeight-window.innerHeight;
+      fill.style.width=(h>0?(window.scrollY/h)*100:0).toFixed(2)+'%';
+      var cur='Setup del C-OS';
+      for(var i=0;i<secs.length;i++){ if(secs[i].getBoundingClientRect().top<160){ cur=names[secs[i].id]||cur; } }
+      if(sec.textContent!==cur) sec.textContent=cur;
+    }
+    window.addEventListener('scroll',onScroll,{passive:true});
+    window.addEventListener('resize',onScroll); onScroll();
+    var clock=document.getElementById('clock');
+    function tick(){ try{ clock.textContent=new Intl.DateTimeFormat('es-AR',{
+      timeZone:'America/Argentina/Buenos_Aires',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false
+    }).format(new Date()); }catch(e){ clock.textContent=''; } }
+    tick(); setInterval(tick,1000);
+    function fallback(text){
+      var ta=document.createElement('textarea'); ta.value=text; ta.setAttribute('readonly','');
+      ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select();
+      try{ document.execCommand('copy'); }catch(e){} document.body.removeChild(ta);
+    }
+    Array.prototype.forEach.call(document.querySelectorAll('.cmd'),function(box){
+      var btn=box.querySelector('.copy'), pre=box.querySelector('pre');
+      btn.addEventListener('click',function(){
+        var text=pre.textContent;
+        function done(){ btn.textContent='Copiado'; btn.classList.add('ok');
+          setTimeout(function(){ btn.textContent='Copiar'; btn.classList.remove('ok'); },1600); }
+        if(navigator.clipboard&&navigator.clipboard.writeText){
+          navigator.clipboard.writeText(text).then(done,function(){ fallback(text); done(); });
+        } else { fallback(text); done(); }
+      });
+    });
+  })();
+</script>
+</body>
+</html>
