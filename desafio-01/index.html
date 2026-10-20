@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>COMANDO — Desafío 01</title>
+<meta name="description" content="Desafío de la semana para J.M.: cerrar el Gate 1 y hacer llegar el primer lead del Readiness Test a Notion, en local, con secretos por op." />
+<meta name="robots" content="noindex,nofollow,noarchive,nosnippet" />
+<meta name="googlebot" content="noindex,nofollow" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400;500&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230b0b0c'/%3E%3Cpath d='M16 7l9 9-9 9-9-9z' fill='%238f9c6c'/%3E%3C/svg%3E" />
+<style>
+  /* ============ GREEN-SILVER · Control Surface ============ */
+  :root{
+    --bg:#0b0b0c; --bg-2:#0e0e10; --bg-3:#141416;
+    --fg:#f4f3f1;
+    --mid:rgba(244,243,241,0.58);
+    --faint:rgba(244,243,241,0.34);
+    --rule:rgba(244,243,241,0.10);
+    --rule-med:rgba(244,243,241,0.20);
+    --silver:#bcc2c4;
+    --accent:#8f9c6c;
+    --accent-soft:rgba(143,156,108,0.13);
+    --accent-line:rgba(143,156,108,0.50);
+    --hot:#f5a623;
+    --hot-soft:rgba(245,166,35,0.10);
+    --font-serif:'Cormorant Garamond',Georgia,serif;
+    --font-mono:'Space Mono',ui-monospace,'SF Mono',Menlo,monospace;
+    --font-sans:'DM Sans',-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
+    --maxw:1080px;
+    --gutter:clamp(16px,4.5vw,56px);
+    --radius:16px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg); color:var(--fg); font-family:var(--font-sans); font-weight:300;
+    -webkit-font-smoothing:antialiased; overflow-x:hidden}
+  ::selection{background:var(--accent);color:var(--bg)}
+
+  .bleed{position:fixed; inset:0; z-index:0; pointer-events:none;
+    background:radial-gradient(55% 40% at 82% 6%, rgba(143,156,108,0.14), transparent 70%),
+               radial-gradient(45% 35% at 12% 60%, rgba(120,86,46,0.10), transparent 72%);
+    filter:blur(40px)}
+
+  /* chrome */
+  .chrome{position:fixed; top:0; left:0; right:0; z-index:40; display:flex;
+    justify-content:space-between; align-items:center; gap:12px;
+    padding:12px var(--gutter); font-family:var(--font-mono); font-size:10px;
+    letter-spacing:.18em; text-transform:uppercase; color:var(--mid);
+    background:rgba(11,11,12,0.86); backdrop-filter:blur(12px); border-bottom:1px solid var(--rule)}
+  .chrome .grp{display:flex; align-items:center; gap:12px}
+  .wordmark{color:var(--fg); letter-spacing:.30em}
+  .sep{color:var(--faint)}
+  .tnum{font-variant-numeric:tabular-nums}
+  .live{display:inline-flex; align-items:center; gap:7px; color:var(--accent)}
+  .dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 2.4s ease-out infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(143,156,108,.45)}70%{box-shadow:0 0 0 8px rgba(143,156,108,0)}100%{box-shadow:0 0 0 0 rgba(143,156,108,0)}}
+  .track{position:fixed;top:0;left:0;right:0;height:2px;z-index:41}
+  .fill{height:100%;width:0;background:var(--accent)}
+  .reg{position:fixed;z-index:30;width:20px;height:20px;pointer-events:none;opacity:.45}
+  .reg::before,.reg::after{content:"";position:absolute;background:var(--rule-med)}
+  .reg::before{top:50%;left:0;width:100%;height:1px;transform:translateY(-50%)}
+  .reg::after{left:50%;top:0;height:100%;width:1px;transform:translateX(-50%)}
+  .reg.bl{bottom:20px;left:calc(var(--gutter) - 10px)}
+  .reg.br{bottom:20px;right:calc(var(--gutter) - 10px)}
+
+  main{position:relative;z-index:10;max-width:var(--maxw);margin:0 auto;padding:0 var(--gutter) 90px}
+
+  /* hero */
+  .hero{padding:118px 0 44px}
+  .display{font-family:var(--font-serif);font-weight:300;
+    font-size:clamp(2.6rem,7.6vw,4.9rem);line-height:.98;letter-spacing:-.025em}
+  .display em{font-style:italic;color:var(--accent)}
+  .lede{font-size:clamp(1rem,1.9vw,1.2rem);line-height:1.5;color:var(--mid);max-width:44ch;margin-top:24px}
+  .lede strong{color:var(--fg);font-weight:400}
+  .meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:28px}
+  .pill{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--silver);border:1px solid var(--rule-med);border-radius:999px;padding:6px 13px}
+  .pill .pd{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--accent);
+    margin-right:7px;vertical-align:middle}
+
+  /* how-to-use strip */
+  .strip{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:38px}
+  .strip .c{border:1px solid var(--rule);border-radius:var(--radius);padding:16px 18px;background:var(--bg-2)}
+  .strip .k{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--accent);margin-bottom:7px}
+  .strip .v{font-size:.9rem;line-height:1.45;color:var(--mid)}
+  .strip .v b{color:var(--fg);font-weight:400}
+
+  /* sections */
+  section{padding:58px 0;border-top:1px solid var(--rule)}
+  .eyebrow{font-family:var(--font-mono);font-size:10px;letter-spacing:.24em;text-transform:uppercase;
+    color:var(--accent);margin-bottom:18px;display:flex;align-items:center;gap:11px}
+  .eyebrow .n{color:var(--faint)}
+  .eyebrow .bar{width:24px;height:1px;background:var(--accent-line)}
+  h2{font-family:var(--font-serif);font-weight:300;font-size:clamp(1.8rem,4.6vw,2.9rem);
+    line-height:1.03;letter-spacing:-.022em;margin-bottom:20px}
+  h2 em{font-style:italic;color:var(--accent)}
+  h3{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--silver);margin:36px 0 13px;font-weight:700}
+  p{font-size:.985rem;line-height:1.62;color:var(--mid);max-width:66ch;margin-bottom:15px}
+  p strong{color:var(--fg);font-weight:400}
+  p em{font-style:italic;color:var(--silver)}
+  code{font-family:var(--font-mono);font-size:.85em;color:var(--silver);
+    background:rgba(244,243,241,0.055);padding:1px 5px;border-radius:4px}
+  a{color:var(--accent);text-decoration:none;border-bottom:1px solid var(--accent-line)}
+  a:hover{color:var(--fg);border-bottom-color:var(--fg)}
+  ul{list-style:none;max-width:66ch;margin-bottom:15px}
+  li{font-size:.985rem;line-height:1.58;color:var(--mid);padding-left:19px;position:relative;margin-bottom:10px}
+  li::before{content:"";position:absolute;left:0;top:.66em;width:7px;height:1px;background:var(--accent-line)}
+  li strong{color:var(--fg);font-weight:400}
+
+  /* figures */
+  figure{margin:26px 0 8px}
+  .fw{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--rule);
+    border-radius:var(--radius);background:var(--bg-2);padding:22px 20px}
+  .fw svg{display:block;width:100%;height:auto}
+  figcaption{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--faint);margin-top:11px;display:flex;gap:9px;align-items:baseline}
+  figcaption .fn{color:var(--accent)}
+  /* svg type */
+  .sv-l{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;fill:var(--faint)}
+  .sv-t{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:400;fill:var(--fg)}
+  .sv-s{font-family:'DM Sans',sans-serif;font-size:11.5px;font-weight:300;fill:var(--mid)}
+  .sv-a{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;fill:var(--accent)}
+  .sv-n{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.1em;fill:var(--silver)}
+  .sv-box{fill:var(--bg-3);stroke:var(--rule-med);stroke-width:1}
+  .sv-box-a{fill:var(--accent-soft);stroke:var(--accent-line);stroke-width:1}
+  .sv-box-h{fill:var(--hot-soft);stroke:rgba(245,166,35,.4);stroke-width:1}
+  .sv-ln{stroke:var(--rule-med);stroke-width:1;fill:none}
+  .sv-ln-a{stroke:var(--accent);stroke-width:1.4;fill:none}
+  .sv-ln-d{stroke:var(--rule-med);stroke-width:1;fill:none;stroke-dasharray:3 4}
+
+  /* tables */
+  .tw{overflow-x:auto;margin:20px 0 6px;-webkit-overflow-scrolling:touch}
+  table{border-collapse:collapse;width:100%;min-width:480px}
+  th{font-family:var(--font-mono);font-size:9px;letter-spacing:.17em;text-transform:uppercase;
+    color:var(--faint);text-align:left;font-weight:400;padding:0 15px 9px 0;
+    border-bottom:1px solid var(--rule-med);white-space:nowrap}
+  td{font-size:.915rem;line-height:1.48;color:var(--mid);padding:12px 15px 12px 0;
+    border-bottom:1px solid var(--rule);vertical-align:top}
+  td:first-child{color:var(--fg);font-weight:400}
+  td.num{font-family:var(--font-mono);font-variant-numeric:tabular-nums;color:var(--silver);
+    font-size:.84rem;white-space:nowrap}
+  td.yes{color:var(--accent)}
+  td.no{color:var(--hot)}
+  .gloss td:first-child,.lanes td:first-child{font-family:var(--font-mono);font-size:.8rem;
+    letter-spacing:.02em;color:var(--silver)}
+  .lanes th:first-child{width:118px}
+
+  /* numbered concept cards */
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(232px,1fr));gap:11px;margin-top:8px}
+  .card{border:1px solid var(--rule);border-radius:var(--radius);padding:17px 18px;background:var(--bg-2)}
+  .card .ix{font-family:var(--font-mono);font-size:10px;letter-spacing:.14em;color:var(--accent);
+    font-variant-numeric:tabular-nums;margin-bottom:8px;display:block}
+  .card .t{font-size:.97rem;color:var(--fg);margin-bottom:6px;font-weight:400}
+  .card .t code{font-size:.9em}
+  .card .d{font-size:.87rem;line-height:1.45;color:var(--mid)}
+
+  /* hero tool card */
+  .tool{border:1px solid var(--accent-line);border-radius:var(--radius);padding:24px 26px;
+    background:linear-gradient(180deg,var(--accent-soft),rgba(20,20,22,.4));margin-bottom:20px}
+  .tool .k{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--accent);margin-bottom:10px}
+  .tool h4{font-family:var(--font-serif);font-weight:300;font-size:clamp(1.5rem,3.6vw,2.1rem);
+    letter-spacing:-.02em;color:var(--fg);margin-bottom:10px}
+  .tool p{margin-bottom:0;max-width:62ch}
+
+  /* note panels */
+  .note{margin:22px 0;padding:18px 22px;border:1px solid var(--rule-med);border-radius:var(--radius);
+    background:rgba(20,20,20,.55)}
+  .note.stop{border-color:rgba(245,166,35,.32)}
+  .note .tag{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--accent);display:flex;align-items:center;gap:8px;margin-bottom:10px}
+  .note.stop .tag{color:var(--hot)}
+  .note.stop .tag::before{content:"\25A0";font-size:8px}
+  .note p{margin:0;max-width:68ch;font-size:.93rem}
+  .note p + p{margin-top:10px}
+
+  /* rhythm strip */
+  .rhythm{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:10px;
+    border:1px solid var(--rule-med);border-radius:var(--radius);overflow:hidden}
+  .rhythm .st{padding:18px 20px;border-right:1px solid var(--rule)}
+  .rhythm .st:last-child{border-right:none}
+  .rhythm .h{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--accent);margin-bottom:11px}
+  .rhythm ol{list-style:none;counter-reset:s}
+  .rhythm li{counter-increment:s;padding-left:22px;margin-bottom:8px;font-size:.88rem;line-height:1.4}
+  .rhythm li::before{content:counter(s);position:absolute;left:0;top:0;width:auto;height:auto;
+    background:none;font-family:var(--font-mono);font-size:9.5px;color:var(--faint)}
+
+  /* stage cards */
+  .stages{display:grid;gap:13px;margin-top:8px}
+  .stage{border:1px solid var(--rule-med);border-radius:var(--radius);padding:24px;background:var(--bg-2)}
+  .stage .hd{display:flex;align-items:baseline;gap:12px;margin-bottom:8px}
+  .stage .ix{font-family:var(--font-mono);font-size:10px;letter-spacing:.18em;color:var(--accent);
+    font-variant-numeric:tabular-nums}
+  .stage h4{font-family:var(--font-serif);font-weight:300;font-size:clamp(1.3rem,3.2vw,1.75rem);
+    line-height:1.1;letter-spacing:-.018em;color:var(--fg)}
+  .stage p{font-size:.94rem;margin-bottom:12px}
+  .todo{list-style:none;margin:14px 0 0}
+  .todo li{padding-left:26px;font-size:.9rem;margin-bottom:9px}
+  .todo li::before{content:"";position:absolute;left:0;top:.18em;width:12px;height:12px;
+    border:1px solid var(--rule-med);border-radius:3px;background:none}
+  .gate{margin-top:17px;padding-top:15px;border-top:1px solid var(--rule)}
+  .gate .lab{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--accent);display:inline-flex;align-items:center;gap:7px;margin-bottom:8px}
+  .gate .lab::before{content:"\25C6";font-size:8px}
+  .gate p{margin:0;font-size:.9rem;max-width:68ch}
+
+  blockquote{margin:24px 0;padding:20px 24px;border-left:2px solid var(--accent);
+    background:var(--accent-soft);border-radius:0 var(--radius) var(--radius) 0}
+  blockquote p{font-family:var(--font-serif);font-size:clamp(1.12rem,2.4vw,1.5rem);line-height:1.32;
+    color:var(--fg);font-style:italic;margin:0;max-width:48ch}
+  blockquote cite{display:block;margin-top:12px;font-family:var(--font-mono);font-style:normal;
+    font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--faint)}
+
+  ol.read{list-style:none;counter-reset:r;max-width:66ch}
+  ol.read li{counter-increment:r;padding-left:34px;margin-bottom:13px;font-size:.95rem}
+  ol.read li::before{content:counter(r,decimal-leading-zero);position:absolute;left:0;top:.06em;
+    font-family:var(--font-mono);font-size:10px;color:var(--faint);background:none;width:auto;height:auto}
+
+  footer{border-top:1px solid var(--rule);padding:30px var(--gutter) 40px;position:relative;z-index:10;
+    max-width:var(--maxw);margin:0 auto;font-family:var(--font-mono);font-size:10px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--faint);display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
+
+  @media (max-width:760px){
+    .strip,.rhythm{grid-template-columns:1fr}
+    .rhythm .st{border-right:none;border-bottom:1px solid var(--rule)}
+    .rhythm .st:last-child{border-bottom:none}
+  }
+  @media (max-width:640px){
+    .chrome .hide-s{display:none}
+    .reg{display:none}
+    .fw{padding:16px 14px}
+    .stage,.tool{padding:20px 18px}
+  }
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.dot{animation:none}}
+
+  /* command blocks (setup) */
+  .cmd{position:relative;margin:16px 0 18px;border:1px solid var(--rule-med);border-radius:12px;
+    background:var(--bg-3);max-width:760px}
+  .cmd pre{margin:0;padding:16px 92px 16px 18px;overflow-x:auto;-webkit-overflow-scrolling:touch;
+    font-family:var(--font-mono);font-size:.82rem;line-height:1.65;color:var(--fg);white-space:pre-wrap;overflow-wrap:anywhere}
+  .cmd .lbl{position:absolute;top:-8px;left:14px;padding:0 7px;background:var(--bg);
+    font-family:var(--font-mono);font-size:8.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--faint)}
+  .copy{position:absolute;top:10px;right:10px;font-family:var(--font-mono);font-size:9px;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--silver);background:transparent;
+    border:1px solid var(--rule-med);border-radius:999px;padding:6px 11px;cursor:pointer}
+  .copy:hover{color:var(--fg);border-color:var(--fg)}
+  .copy.ok{color:var(--accent);border-color:var(--accent-line)}
+  .copy:focus-visible{outline:1px solid var(--accent);outline-offset:2px}
+  ol.steps{list-style:none;counter-reset:st;max-width:66ch;margin-bottom:15px}
+  ol.steps li{counter-increment:st;padding-left:30px}
+  ol.steps li::before{content:counter(st);position:absolute;left:0;top:.2em;width:auto;height:auto;
+    background:none;font-family:var(--font-mono);font-size:10px;color:var(--accent)}
+  kbd{font-family:var(--font-mono);font-size:.8em;color:var(--fg);border:1px solid var(--rule-med);
+    border-bottom-width:2px;border-radius:5px;padding:1px 6px;background:var(--bg-3)}
+  .check{display:inline-block;font-family:var(--font-mono);font-size:9.5px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--accent);margin-right:8px}
+  @media (max-width:640px){ .cmd pre{padding:40px 14px 14px;font-size:.78rem} }
+</style>
+</head>
+<body>
+<div class="bleed" aria-hidden="true"></div>
+<div class="track" aria-hidden="true"><div class="fill" id="fill"></div></div>
+
+<div class="chrome">
+  <div class="grp"><span class="wordmark">COMANDO</span><span class="sep hide-s">/</span>
+    <span class="hide-s" id="sec">Desafío 01</span></div>
+  <div class="grp"><span class="hide-s">19–23 oct</span><span class="sep hide-s">/</span>
+    <span class="tnum hide-s" id="clock">—</span><span class="sep hide-s">/</span>
+    <span class="live"><span class="dot"></span> Buenos Aires</span></div>
+</div>
+<span class="reg bl" aria-hidden="true"></span><span class="reg br" aria-hidden="true"></span>
+
+<main>
+
+<header class="hero">
+  <h1 class="display">El primer<br /><em>lead</em></h1>
+  <p class="lede"><strong>Para el viernes 23:</strong> cerrás el Gate 1 y hacés que el primer lead del Readiness Test llegue a Notion y a tu mail. En tu Mac, con todos los secretos inyectados por <code>op</code>.</p>
+  <div class="meta">
+    <span class="pill"><span class="pd"></span>Interno</span>
+    <span class="pill">Desafío 01 · 2026-10-19</span>
+    <span class="pill">Etapa 1 → Etapa 2</span>
+  </div>
+  <div class="strip">
+    <div class="c"><div class="k">Parte 1</div><div class="v">Cerrar el <b>Gate 1</b> en <code>jm-os</code>: la Connection con <b>op</b> y su rutina.</div></div>
+    <div class="c"><div class="k">Parte 2</div><div class="v">La captura de leads del <b>Readiness Test</b>, funcionando en local.</div></div>
+    <div class="c"><div class="k">Parte 3</div><div class="v">Dejarle a Mariano todo listo para <b>encenderla en producción</b>.</div></div>
+  </div>
+</header>
+
+<section id="s0">
+  <div class="eyebrow"><span class="n">00</span><span class="bar"></span>Dónde estás</div>
+  <h2>Te falta<br /><em>un criterio</em></h2>
+  <p>Terminaste el setup y casi todo el Gate 1: <code>jm-os</code> bootea, cerraste una tarea de deuda (el Canon ya no manda las instancias a <code>clients/</code>) y pusiste el onboarding al día con el Mark VI.</p>
+  <p>Falta <strong>una Connection autenticada con <code>op</code></strong>. Esta semana te llega la invitación a un vault de 1Password solo para <code>jm-os</code>. Mientras llega, arrancás la etapa 2.</p>
+  <div class="note"><div class="tag">Por qué este desafío</div><p>Hoy el test está vivo en <a href="https://comando-ai.com/readiness" target="_blank" rel="noopener">comando-ai.com/readiness</a>, pero <strong>no se guarda ni un lead</strong>: el mail y el CRM se saltean en silencio. Es chico, se puede verificar y te hace tocar todo lo que importa: secretos, Notion, Resend, variables de entorno.</p></div>
+</section>
+
+<section id="s1">
+  <div class="eyebrow"><span class="n">01</span><span class="bar"></span>Parte 1 · Gate 1</div>
+  <h2>La Connection,<br /><em>con op</em></h2>
+  <p>En <code>jm-os</code>, apenas aceptás la invitación al vault.</p>
+  <ol class="steps">
+    <li><strong>Confirmá de quién es la cuenta.</strong> Instagram va con tu cuenta personal. Si alguna vez la querés apuntar a una cuenta de COMANDO, frenás y lo hablás con Mariano: un token que publica como la empresa es comunicación externa.</li>
+    <li><strong>El token va al vault, nunca al disco.</strong> En <code>jm-os</code> solo vive la referencia <code>op://…</code>; el valor lo inyecta <code>op run</code> o <code>op read</code>.</li>
+    <li><strong>Probala.</strong> Un <code>TL_</code> que lea algo real de tu cuenta (tus últimas publicaciones) con el token inyectado. Si devuelve datos, está autenticada.</li>
+    <li><strong>Armá la rutina de renovación.</strong> El token largo de Meta vence a los 60 días y, si nadie lo renueva, la Connection se rompe sin avisar. Renovación cada ~50 días como rutina de cadencia. Eso también cumple el criterio de rutina del gate.</li>
+    <li><strong>Cerrá el gate por escrito.</strong> Los cinco criterios del onboarding, uno por uno, con su evidencia en el pulse de <code>jm-os</code>.</li>
+  </ol>
+  <div class="cmd"><span class="lbl">Terminal · comprobar op</span><button class="copy" type="button">Copiar</button><pre>op whoami
+op vault list</pre></div>
+</section>
+
+<section id="s2">
+  <div class="eyebrow"><span class="n">02</span><span class="bar"></span>Parte 2 · Leer</div>
+  <h2>La captura<br /><em>ya existe</em></h2>
+  <p>Se trabaja en el C-OS, en <code>projects/comando-website/app</code> (Next.js). <code>src/lib/crm.ts</code> guarda cada test en Notion y <code>src/lib/email.ts</code> manda el reporte por Resend. Si les faltan las variables, se apagan solas. <strong>Tu trabajo es encenderlas, no reescribirlas.</strong></p>
+  <ol class="steps">
+    <li>Leé <code>crm.ts</code>, <code>email.ts</code>, <code>.env.example</code> y <code>tests/readiness.spec.ts</code>. Pedile a Claude que te los explique si algo no cierra.</li>
+    <li>Instalá y corré los tests. Anotá qué pasa y qué no.</li>
+  </ol>
+  <div class="cmd"><span class="lbl">Terminal</span><button class="copy" type="button">Copiar</button><pre>cd ~/Documents/COMANDO/C-OS/projects/comando-website/app
+npm install
+npx playwright install chromium
+npm run test:e2e</pre></div>
+</section>
+
+<section id="s3">
+  <div class="eyebrow"><span class="n">03</span><span class="bar"></span>Parte 2 · Armar</div>
+  <h2>Notion, Resend<br /><em>y el vault</em></h2>
+  <h3>La base de leads, en tu Notion</h3>
+  <p>De prueba: la tuya, no la de COMANDO. Con las propiedades que pide <code>crm.ts</code>, con estos nombres exactos:</p>
+  <div class="tw"><table>
+    <tr><th>Propiedad</th><th>Tipo</th></tr>
+    <tr><td>Name</td><td>Título</td></tr>
+    <tr><td>Email · Company · Role · Industry · Size</td><td>Texto (Email puede ser tipo email)</td></tr>
+    <tr><td>Source · Band</td><td>Select</td></tr>
+    <tr><td>Readiness Index</td><td>Número</td></tr>
+    <tr><td>Archetype · Summary</td><td>Texto</td></tr>
+  </table></div>
+  <p style="margin-top:18px">Creá una <strong>integración interna</strong> de Notion y compartí la base con ella. Eso te da el token y el ID de la base.</p>
+  <h3>Resend, con tu mail</h3>
+  <p>Abrí una cuenta en <a href="https://resend.com" target="_blank" rel="noopener">resend.com</a>. Sin dominio verificado, Resend solo te deja mandar desde <code>onboarding@resend.dev</code> a tu propia dirección. Para esta prueba alcanza.</p>
+  <h3>Todo secreto, al vault</h3>
+  <p>El token de Notion, el ID de la base, la API key de Resend y la key de Anthropic que te pasa Mariano van a tu vault. En la carpeta del sitio, un archivo con <strong>solo referencias</strong>, nunca valores. El nombre <code>.env.op.local</code> ya está ignorado por git.</p>
+  <div class="cmd"><span class="lbl">.env.op.local · solo referencias</span><button class="copy" type="button">Copiar</button><pre>ANTHROPIC_API_KEY=op://jm-os/anthropic/credential
+NOTION_TOKEN=op://jm-os/notion-leads/credential
+NOTION_LEADS_DB_ID=op://jm-os/notion-leads/db_id
+RESEND_API_KEY=op://jm-os/resend/credential
+RESEND_FROM=onboarding@resend.dev
+READINESS_NOTIFY_EMAIL=martin.echeverry@comando.live</pre></div>
+  <p>Los nombres de vault e ítem son un ejemplo: usá los tuyos.</p>
+</section>
+
+<section id="s4">
+  <div class="eyebrow"><span class="n">04</span><span class="bar"></span>Parte 2 · Probar</div>
+  <h2>El test entero,<br /><em>de punta a punta</em></h2>
+  <div class="cmd"><span class="lbl">Terminal</span><button class="copy" type="button">Copiar</button><pre>op run --env-file=.env.op.local -- npm run dev</pre></div>
+  <ol class="steps">
+    <li>Abrí <code>localhost</code> en la ruta <code>/readiness</code> (el puerto lo imprime la Terminal).</li>
+    <li>Hacé el test completo con una empresa inventada y tu mail.</li>
+    <li><span class="check">Comprobá</span>una página nueva en tu base de Notion, con el índice, la banda y el arquetipo.</li>
+    <li><span class="check">Comprobá</span>el mail del reporte en tu bandeja.</li>
+    <li>Si algo no llega, la Terminal dice por qué: <code>[crm] skipped</code> o <code>[email]</code> con el motivo.</li>
+  </ol>
+  <div class="note stop"><div class="tag">Ojo con el costo</div><p>Cada test completo son <strong>13 turnos de Opus más una llamada de puntaje</strong>. Hacé las corridas que necesites, no más, y anotá cuántas hiciste.</p></div>
+</section>
+
+<section id="s5">
+  <div class="eyebrow"><span class="n">05</span><span class="bar"></span>Parte 3 · Entregar</div>
+  <h2>Listo para<br /><em>encender</em></h2>
+  <p>No tocás producción. Le dejás a Mariano dos documentos en <code>projects/comando-website/</code>:</p>
+  <div class="cards">
+    <div class="card"><span class="ix">A</span><div class="t">Checklist de producción</div><div class="d">En orden: los registros DNS exactos que pide Resend para <code>comando-ai.com</code>, las variables de Vercel Production con su referencia <code>op://</code> y la base de leads definitiva en el Notion de COMANDO. <strong>Tiene que poder hacerlo en 15 minutos sin preguntarte nada.</strong></div></div>
+    <div class="card"><span class="ix">B</span><div class="t">Propuesta de costo</div><div class="d">Una página: cuántos tokens gastó tu corrida, Haiku 4.5 u Opus, qué tope por visitante y qué implica pasar Vercel de Hobby (no comercial) a Pro. Escrita como propuesta para el <code>decision_log</code>. Decide Mariano.</div></div>
+  </div>
+</section>
+
+<section id="s6">
+  <div class="eyebrow"><span class="n">06</span><span class="bar"></span>Autoridad</div>
+  <h2>Lo que pasa<br /><em>por Mariano</em></h2>
+  <p>Si llegás a uno de estos puntos, no lo resolvés solo: lo anotás en <strong>Blocked</strong> del pulse con lo que necesitás, y seguís con otra cosa.</p>
+  <div class="tw"><table>
+    <tr><th>Qué</th><th>Por qué</th></tr>
+    <tr><td>Key de Anthropic para correr el test</td><td>Gasta plata. Mariano te la pasa al vault, con tope.</td></tr>
+    <tr><td>DNS de <code>comando-ai.com</code></td><td>Se toca en el registrar.</td></tr>
+    <tr><td>Variables de Vercel Production y deploy</td><td>Es producción.</td></tr>
+    <tr><td>Modelo y tope de costo del test</td><td>Es plata.</td></tr>
+    <tr><td>Instagram de COMANDO</td><td>Es comunicación externa.</td></tr>
+  </table></div>
+</section>
+
+<section id="s7">
+  <div class="eyebrow"><span class="n">07</span><span class="bar"></span>Hecho</div>
+  <h2>El viernes,<br /><em>esto está tildado</em></h2>
+  <ul class="todo">
+    <li>La Connection de <code>jm-os</code> devuelve datos reales con el token inyectado por <code>op</code>.</li>
+    <li>La rutina de renovación del token está programada.</li>
+    <li>Los cinco criterios del Gate 1 tienen su evidencia en el pulse de <code>jm-os</code>.</li>
+    <li>Un lead de prueba está en tu base de Notion.</li>
+    <li>El mail del reporte llegó a tu bandeja.</li>
+    <li>Ningún secreto en el disco ni en git: solo referencias <code>op://</code>.</li>
+    <li>Checklist de producción y propuesta de costo, en el repo.</li>
+    <li>Cerraste con <code>/upc</code> y le mandaste a Mariano el status report.</li>
+  </ul>
+  <div class="gate"><div class="lab">Gate 1 cerrado</div><p>Con esto queda cerrado el Gate 1 y la primera tarea de la etapa 2 lista para producción. El paso siguiente es encenderla con Mariano y medir los primeros leads reales.</p></div>
+</section>
+
+</main>
+
+<footer>
+  <span>COMANDO · Buenos Aires · 2026</span>
+  <span>Desafío 01 · 19–23 oct</span>
+</footer>
+
+<script>
+  (function(){
+    var fill=document.getElementById('fill'), sec=document.getElementById('sec');
+    var names={s0:'00 · Dónde estás',s1:'01 · Gate 1',s2:'02 · Leer',s3:'03 · Armar',s4:'04 · Probar',s5:'05 · Entregar',s6:'06 · Autoridad',s7:'07 · Hecho'};
+    var secs=Array.prototype.slice.call(document.querySelectorAll('section'));
+    function onScroll(){
+      var h=document.documentElement.scrollHeight-window.innerHeight;
+      fill.style.width=(h>0?(window.scrollY/h)*100:0).toFixed(2)+'%';
+      var cur='Desafío 01';
+      for(var i=0;i<secs.length;i++){ if(secs[i].getBoundingClientRect().top<160){ cur=names[secs[i].id]||cur; } }
+      if(sec.textContent!==cur) sec.textContent=cur;
+    }
+    window.addEventListener('scroll',onScroll,{passive:true});
+    window.addEventListener('resize',onScroll); onScroll();
+    var clock=document.getElementById('clock');
+    function tick(){ try{ clock.textContent=new Intl.DateTimeFormat('es-AR',{
+      timeZone:'America/Argentina/Buenos_Aires',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false
+    }).format(new Date()); }catch(e){ clock.textContent=''; } }
+    tick(); setInterval(tick,1000);
+    function fallback(text){
+      var ta=document.createElement('textarea'); ta.value=text; ta.setAttribute('readonly','');
+      ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select();
+      try{ document.execCommand('copy'); }catch(e){} document.body.removeChild(ta);
+    }
+    Array.prototype.forEach.call(document.querySelectorAll('.cmd'),function(box){
+      var btn=box.querySelector('.copy'), pre=box.querySelector('pre');
+      btn.addEventListener('click',function(){
+        var text=pre.textContent;
+        function done(){ btn.textContent='Copiado'; btn.classList.add('ok');
+          setTimeout(function(){ btn.textContent='Copiar'; btn.classList.remove('ok'); },1600); }
+        if(navigator.clipboard&&navigator.clipboard.writeText){
+          navigator.clipboard.writeText(text).then(done,function(){ fallback(text); done(); });
+        } else { fallback(text); done(); }
+      });
+    });
+  })();
+</script>
+</body>
+</html>
