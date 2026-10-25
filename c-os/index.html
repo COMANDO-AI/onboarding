@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>COMANDO — C-OS en una página</title>
+<meta name="description" content="Mapa visual del repositorio C-OS: COMANDO Corp, el Canon, el modelo 4C, el método, las sesiones, los Marks y lo que está abierto." />
+<meta name="robots" content="noindex,nofollow,noarchive,nosnippet" />
+<meta name="googlebot" content="noindex,nofollow" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230b0b0c'/%3E%3Cpath d='M16 7l9 9-9 9-9-9z' fill='%238f9c6c'/%3E%3C/svg%3E" />
+<style>html,body{margin:0}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}img{max-width:100%}[hidden]{display:none!important}</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=Space+Mono:wght@400;700&display=swap">
+<style>
+/* Layout: GREEN-SILVER "control surface" — one framed sheet on a 12-col hairline grid; panels hold diagrams, readouts in mono. Deliberately dark-only (brand). */
+:root{
+  --bg:#0b0b0c; --bg-2:#111113; --fg:#f4f3f1;
+  --mid:rgba(244,243,241,.6); --faint:rgba(244,243,241,.36);
+  --rule:rgba(244,243,241,.11); --rule-med:rgba(244,243,241,.24);
+  --silver:#bcc2c4; --accent:#8f9c6c; --accent-soft:rgba(143,156,108,.14); --accent-line:rgba(143,156,108,.55);
+  --hot:#f5a623;
+  --serif:"Cormorant Garamond","Iowan Old Style",Georgia,serif;
+  --sans:"DM Sans",ui-sans-serif,system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+  --mono:"Space Mono",ui-monospace,"SF Mono",Menlo,monospace;
+  --r:14px;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:15px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 40px}
+.sheet{max-width:1240px;margin:0 auto;position:relative;border:1px solid var(--rule);padding:clamp(18px,3vw,40px);
+  background:radial-gradient(120% 60% at 85% -10%,rgba(143,156,108,.10),transparent 60%),radial-gradient(80% 40% at 0% 100%,rgba(120,95,60,.07),transparent 60%),var(--bg)}
+.sheet::before,.sheet::after,.sheet>.bk::before,.sheet>.bk::after{content:"";position:absolute;width:18px;height:18px;border-color:var(--silver);border-style:solid;opacity:.7}
+.sheet::before{top:-1px;left:-1px;border-width:1px 0 0 1px}
+.sheet::after{top:-1px;right:-1px;border-width:1px 1px 0 0}
+.sheet>.bk::before{bottom:-1px;left:-1px;border-width:0 0 1px 1px}
+.sheet>.bk::after{bottom:-1px;right:-1px;border-width:0 1px 1px 0}
+
+.mono,.lbl{font-family:var(--mono);text-transform:uppercase;letter-spacing:.12em;font-size:10.5px;color:var(--mid)}
+.lbl b{color:var(--fg);font-weight:400}
+.dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--accent);margin-right:8px;vertical-align:1px;box-shadow:0 0 0 3px var(--accent-soft)}
+@media (prefers-reduced-motion:no-preference){.dot{animation:pulse 2.4s ease-in-out infinite}@keyframes pulse{50%{box-shadow:0 0 0 6px transparent}}}
+
+/* header */
+.strip{display:flex;flex-wrap:wrap;gap:8px 22px;justify-content:space-between;padding-bottom:14px;border-bottom:1px solid var(--rule)}
+.hero{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:28px 48px;padding-block:28px 26px;border-bottom:1px solid var(--rule);align-items:end}
+h1{font-family:var(--serif);font-weight:300;font-size:clamp(34px,5.2vw,64px);line-height:1.02;letter-spacing:-.01em;margin:10px 0 0;text-wrap:balance}
+h1 em{font-style:italic;color:var(--accent)}
+.lede{color:var(--mid);max-width:62ch;margin:0}
+.lede strong{color:var(--fg);font-weight:500}
+.readouts{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));border-top:1px solid var(--rule);margin-top:0}
+.ro{padding:14px 12px 4px 0;border-right:1px solid var(--rule);padding-left:12px}
+.ro:first-child{padding-left:0}.ro:last-child{border-right:0}
+.ro .n{font-family:var(--serif);font-size:38px;line-height:1;font-variant-numeric:tabular-nums}
+.ro .lbl{display:block;margin-top:6px;font-size:9.5px}
+
+/* grid of panels */
+.row{display:grid;gap:0;border-bottom:1px solid var(--rule)}
+.r2{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.r3{grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1fr)}
+.r-wide{grid-template-columns:minmax(0,1.25fr) minmax(0,1fr)}
+.panel{padding:24px 24px 26px 0;min-width:0}
+.row>.panel+.panel{padding-left:24px;border-left:1px solid var(--rule)}
+.row>.panel:last-child{padding-right:0}
+.ph{display:flex;align-items:baseline;gap:12px;margin-bottom:6px}
+.ph .idx{font-family:var(--mono);font-size:10.5px;color:var(--accent);letter-spacing:.1em}
+h2{font-family:var(--serif);font-weight:400;font-size:27px;line-height:1.1;margin:0;text-wrap:balance}
+.sub{color:var(--mid);font-size:13.5px;margin:4px 0 16px;max-width:60ch}
+.fig{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.fig svg{display:block;width:100%;height:auto}
+.fig.minw svg{min-width:460px}
+
+/* svg vocabulary */
+svg text{font-family:var(--mono);fill:var(--mid);font-size:9.5px;letter-spacing:.08em}
+svg .t-fg{fill:var(--fg)} svg .t-acc{fill:var(--accent)} svg .t-sil{fill:var(--silver)}
+svg .t-serif{font-family:var(--serif);font-size:17px;letter-spacing:0;fill:var(--fg)}
+svg .t-sans{font-family:var(--sans);font-size:11px;letter-spacing:0;fill:var(--mid)}
+svg .box{fill:var(--bg-2);stroke:var(--rule-med);stroke-width:1}
+svg .box-acc{fill:var(--accent-soft);stroke:var(--accent-line);stroke-width:1}
+svg .frame{fill:none;stroke:var(--rule-med);stroke-dasharray:3 4}
+svg .ln{fill:none;stroke:var(--silver);stroke-width:1;opacity:.55}
+svg .ln-acc{fill:none;stroke:var(--accent);stroke-width:1.4}
+svg .ah{fill:var(--silver)} svg .ah-acc{fill:var(--accent)}
+svg .grid{stroke:var(--rule);stroke-width:1}
+svg .bar{fill:var(--accent)} svg .bar-dim{fill:var(--silver);opacity:.5}
+svg .hit{fill:transparent;cursor:default}
+
+/* 4C */
+.c4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.brk{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:10px}
+.brk div{border:1px solid var(--rule-med);border-bottom:0;height:12px;position:relative}
+.brk span{position:absolute;top:-9px;left:50%;transform:translateX(-50%);background:var(--bg);padding:0 8px;white-space:nowrap}
+.card{border:1px solid var(--rule);border-radius:var(--r);padding:16px 16px 14px;background:var(--bg-2);display:flex;flex-direction:column;gap:8px;min-width:0}
+.card .k{display:flex;justify-content:space-between;align-items:baseline}
+.card h3{font-family:var(--serif);font-weight:400;font-size:26px;margin:0;line-height:1}
+.card .q{font-family:var(--serif);font-style:italic;font-size:17px;color:var(--silver);line-height:1.2}
+.card .ex{color:var(--mid);font-size:13px}
+.card code{font-family:var(--mono);font-size:11px;color:var(--fg)}
+.meter{height:3px;background:var(--rule);border-radius:2px;overflow:hidden;margin-top:auto}
+.meter i{display:block;height:100%;background:var(--accent)}
+.flow{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;margin-top:16px;padding:12px 14px;border:1px dashed var(--rule-med);border-radius:var(--r)}
+.chip{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;padding:5px 10px;border-radius:999px;border:1px solid var(--rule-med);color:var(--fg);max-width:100%}
+.chip.acc{border-color:var(--accent-line);background:var(--accent-soft)}
+.arr{color:var(--accent);font-family:var(--mono)}
+.flow .note{color:var(--mid);font-size:13px;flex:1 1 220px}
+
+/* harness stack */
+.stack{display:flex;flex-direction:column;gap:6px}
+.layer{border:1px solid var(--rule-med);border-radius:10px;padding:10px 14px;display:grid;grid-template-columns:96px 1fr;gap:10px;align-items:baseline}
+.layer.os{border-color:var(--accent-line);background:var(--accent-soft)}
+.layer.model{border-style:dashed}
+.layer .lbl{color:var(--fg)}
+.layer p{margin:0;color:var(--mid);font-size:13px}
+.layer p code{font-family:var(--mono);font-size:11px;color:var(--fg)}
+.aside{margin-top:12px;font-family:var(--serif);font-style:italic;font-size:18px;color:var(--silver);line-height:1.25}
+
+/* method */
+.steps{display:flex;flex-direction:column;gap:0}
+.step{display:grid;grid-template-columns:34px 1fr;gap:12px;padding:10px 0;border-top:1px solid var(--rule)}
+.step:first-child{border-top:0}
+.step .num{font-family:var(--mono);color:var(--accent);font-size:12px;padding-top:4px}
+.step h4{font-family:var(--serif);font-weight:500;font-size:20px;margin:0}
+.step p{margin:2px 0 0;color:var(--mid);font-size:13px}
+.step .out{font-family:var(--mono);font-size:10px;letter-spacing:.08em;color:var(--silver);text-transform:uppercase;margin-top:4px}
+
+/* tables */
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{font-family:var(--mono);font-weight:400;text-transform:uppercase;letter-spacing:.12em;font-size:9.5px;color:var(--faint);text-align:left;padding:0 10px 8px 0;border-bottom:1px solid var(--rule-med)}
+td{padding:9px 10px 9px 0;border-bottom:1px solid var(--rule);vertical-align:top;color:var(--mid)}
+td:first-child{color:var(--fg)}
+td code{font-family:var(--mono);font-size:11px;color:var(--fg)}
+.pill{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;padding:3px 8px;border-radius:999px;border:1px solid var(--rule-med);color:var(--fg);white-space:nowrap}
+.pill::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--silver)}
+.pill.live::before{background:var(--accent)}
+.pill.wip::before{background:transparent;border:1px solid var(--silver)}
+.pill.hold::before{background:var(--hot);border-radius:1px}
+
+/* lists */
+.list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.list li{display:grid;grid-template-columns:22px 1fr;gap:8px;padding:8px 0;border-top:1px solid var(--rule);font-size:13.5px;color:var(--mid)}
+.list li:first-child{border-top:0}
+.list li b{color:var(--fg);font-weight:500}
+.list .mk{font-family:var(--mono);font-size:11px;color:var(--accent)}
+.list .mk.hot{color:var(--hot)}
+
+/* timeline tooltip */
+.tl-wrap{position:relative}
+.tip{position:absolute;pointer-events:none;background:var(--bg-2);border:1px solid var(--rule-med);border-radius:8px;padding:6px 10px;font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;color:var(--fg);white-space:nowrap;transform:translate(-50%,-110%);opacity:0;transition:opacity .12s}
+.tip.on{opacity:1}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:8px}
+.legend span{display:inline-flex;align-items:center;gap:7px}
+.legend i{display:inline-block;width:12px;height:8px;border-radius:2px;background:var(--accent)}
+.legend i.mk{width:1px;height:12px;background:var(--silver);border-radius:0}
+
+footer{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 20px;padding-top:16px}
+
+@media (max-width:1000px){
+  .r3{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+  .r3>.panel:nth-child(3){grid-column:1/-1;border-left:0;padding-left:0;border-top:1px solid var(--rule)}
+  .c4{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .brk{display:none}
+}
+@media (max-width:760px){
+  .hero,.r2,.r3,.r-wide{grid-template-columns:minmax(0,1fr)}
+  .row>.panel+.panel{padding-left:0;border-left:0;border-top:1px solid var(--rule)}
+  .panel{padding-right:0}
+  .readouts{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .ro:nth-child(3){border-right:0}
+  .ro:nth-child(4){padding-left:0}
+  .ro:nth-child(n+4){border-top:1px solid var(--rule)}
+}
+@media (max-width:440px){.c4{grid-template-columns:minmax(0,1fr)}.layer{grid-template-columns:1fr;gap:2px}}
+</style>
+</head>
+<body>
+<div class="sheet"><span class="bk"></span>
+
+  <div class="strip">
+    <span class="lbl"><span class="dot"></span><b>C-OS</b> · COMANDO Operating System</span>
+    <span class="lbl">Mark <b>VI</b> · instancia <b>#0</b></span>
+    <span class="lbl">Buenos Aires · <b>25.10.2026</b></span>
+  </div>
+
+  <section class="hero">
+    <div>
+      <span class="lbl">Qué es este repositorio</span>
+      <h1>Un sistema operativo cuyo servicio es <em>construir sistemas operativos.</em></h1>
+    </div>
+    <div>
+      <p class="lede">C-OS es cómo <strong>COMANDO</strong> se opera a sí mismo y, a la vez, la muestra viva de lo que vende. No es software tradicional: es un conjunto de <strong>archivos en lenguaje natural</strong> que le dicen a un agente de IA (Claude, que acá actúa como <strong>Comander</strong>) quién es la empresa, qué puede hacer y cómo trabajar. La estructura es el entregable.</p>
+    </div>
+  </section>
+
+  <div class="readouts" aria-label="Indicadores del repositorio">
+    <div class="ro"><span class="n">54</span><span class="lbl">commits · abr–oct</span></div>
+    <div class="ro"><span class="n">6</span><span class="lbl">Marks del OS</span></div>
+    <div class="ro"><span class="n">4</span><span class="lbl">capas · modelo 4C</span></div>
+    <div class="ro"><span class="n">9</span><span class="lbl">agentes con ficha</span></div>
+    <div class="ro"><span class="n">2</span><span class="lbl">operadores en main</span></div>
+  </div>
+
+  <!-- Row 1: institution + recursion -->
+  <div class="row r2">
+    <section class="panel">
+      <div class="ph"><span class="idx">A</span><h2>COMANDO Corp: dos piernas</h2></div>
+      <p class="sub">Una pierna sin fines de lucro publica y construye un medio. La otra vende, por dos unidades con sitio propio. Todo vuelve a la Corp.</p>
+      <div class="fig minw">
+        <svg viewBox="0 0 540 300" role="img" aria-label="Diagrama: COMANDO Corp con pierna sin fines de lucro y pierna con fines de lucro">
+          <defs>
+            <marker id="a1" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" class="ah"/></marker>
+            <marker id="a2" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" class="ah-acc"/></marker>
+          </defs>
+          <rect x="200" y="8" width="140" height="38" rx="8" class="box-acc"/>
+          <text x="270" y="31" text-anchor="middle" class="t-fg">COMANDO CORP ◇</text>
+          <path d="M270 46V62H135V78M270 62H405V78" class="ln"/>
+          <rect x="40" y="78" width="190" height="42" rx="8" class="box"/>
+          <text x="135" y="96" text-anchor="middle" class="t-fg">SIN FINES DE LUCRO</text>
+          <text x="135" y="111" text-anchor="middle" class="t-sans">un modo de trabajo</text>
+          <rect x="310" y="78" width="190" height="42" rx="8" class="box"/>
+          <text x="405" y="96" text-anchor="middle" class="t-fg">CON FINES DE LUCRO</text>
+          <text x="405" y="111" text-anchor="middle" class="t-sans">dos unidades de negocio</text>
+          <path d="M310 106H234" class="ln-acc" marker-end="url(#a2)"/>
+          <text x="270" y="100" text-anchor="middle" class="t-acc">sostiene</text>
+          <!-- non-profit chain -->
+          <rect x="55" y="140" width="160" height="34" rx="6" class="box"/>
+          <text x="135" y="161" text-anchor="middle" class="t-sans">arte + investigación libres</text>
+          <path d="M135 174V186" class="ln" marker-end="url(#a1)"/>
+          <rect x="55" y="190" width="160" height="34" rx="6" class="box"/>
+          <text x="135" y="211" text-anchor="middle" class="t-sans">editorial y publicación</text>
+          <path d="M135 224V236" class="ln" marker-end="url(#a1)"/>
+          <rect x="55" y="240" width="160" height="34" rx="6" class="box"/>
+          <text x="135" y="261" text-anchor="middle" class="t-sans">un medio · audiencia, ideas</text>
+          <path d="M55 257H10V27H196" class="ln-acc" marker-end="url(#a2)"/>
+          <text transform="translate(22 150) rotate(-90)" text-anchor="middle" class="t-acc">capitaliza</text>
+          <path d="M135 120V136" class="ln" marker-end="url(#a1)"/>
+          <!-- for-profit units -->
+          <path d="M405 120V136" class="ln" marker-end="url(#a1)"/>
+          <rect x="310" y="140" width="190" height="52" rx="6" class="box"/>
+          <text x="322" y="160" class="t-fg">COMANDO.LIVE</text>
+          <text x="322" y="178" class="t-sans">estudio creativo · identidad, GTM</text>
+          <text x="405" y="206" text-anchor="middle" class="t-sil">⇅ proyectos compartidos</text>
+          <rect x="310" y="216" width="190" height="52" rx="6" class="box-acc"/>
+          <text x="322" y="236" class="t-fg">COMANDO-AI.COM</text>
+          <text x="322" y="254" class="t-sans">fábrica agéntica · agentes, OS</text>
+          <path d="M500 242H530V27H344" class="ln-acc" marker-end="url(#a2)"/>
+          <text transform="translate(519 150) rotate(90)" text-anchor="middle" class="t-acc">entrega</text>
+        </svg>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="ph"><span class="idx">B</span><h2>La recursión: el Canon estampa sistemas</h2></div>
+      <p class="sub">Dentro de este repo vive el Canon, el esqueleto vacío más el método. Se publica como plantilla y de ahí nace cada sistema nuevo, en su propio repositorio.</p>
+      <div class="fig minw">
+        <svg viewBox="0 0 520 300" role="img" aria-label="Diagrama: el Canon dentro de la instancia cero se publica como plantilla y estampa nuevas instancias">
+          <defs>
+            <marker id="b1" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" class="ah"/></marker>
+            <marker id="b2" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" class="ah-acc"/></marker>
+          </defs>
+          <rect x="8" y="10" width="250" height="182" rx="12" class="frame"/>
+          <text x="22" y="30" class="t-sil">INSTANCIA #0 · ESTE REPO</text>
+          <rect x="20" y="42" width="226" height="104" rx="8" class="box-acc"/>
+          <text x="36" y="66" class="t-serif">canon/ · el meta-arnés</text>
+          <text x="36" y="88" class="t-sans">skeleton/ — las 4C vacías</text>
+          <text x="36" y="106" class="t-sans">method/ — Diagnose → Design → Deploy</text>
+          <text x="36" y="124" class="t-sans">spec/ — el modelo 4C + teoría del arnés</text>
+          <text x="36" y="170" class="t-sans">+ las 4C de COMANDO, llenas: su propio OS</text>
+          <path d="M246 84H310" class="ln-acc" marker-end="url(#b2)"/>
+          <text x="284" y="74" text-anchor="middle" class="t-acc">publica</text>
+          <rect x="314" y="56" width="196" height="58" rx="8" class="box"/>
+          <text x="326" y="78" class="t-fg">C-OS-TEMPLATER</text>
+          <text x="326" y="97" class="t-sans">plantilla en GitHub · v1.0</text>
+          <path d="M412 114V150H352V204M412 150H462V204" class="ln" marker-end="url(#b1)"/>
+          <text x="420" y="140" class="t-sil">estampa</text>
+          <rect x="300" y="208" width="104" height="58" rx="8" class="box"/>
+          <text x="312" y="230" class="t-fg">JM-OS</text>
+          <text x="312" y="248" class="t-sans">J.M. · Gate 1</text>
+          <rect x="410" y="208" width="104" height="58" rx="8" class="box"/>
+          <text x="422" y="230" class="t-fg">CLIENTES</text>
+          <text x="422" y="248" class="t-sans">repo propio</text>
+          <path d="M300 237H136V196" class="ln-acc" stroke-dasharray="4 3" marker-end="url(#b2)"/>
+          <text x="148" y="256" class="t-acc">lo aprendido vuelve</text>
+          <text x="148" y="270" class="t-acc">al Canon · aditivo</text>
+          <text x="8" y="294" class="t-sans">Cada instancia nace transferible: entregarla es transferir el repo.</text>
+        </svg>
+      </div>
+    </section>
+  </div>
+
+  <!-- Row 2: 4C -->
+  <div class="row">
+    <section class="panel" style="padding-right:0">
+      <div class="ph"><span class="idx">C</span><h2>El modelo 4C: la columna de todo OS</h2></div>
+      <p class="sub">Cada instancia, la de COMANDO y la de cualquier cliente, ordena su estado en cuatro carpetas. La barra muestra cuántos archivos versionados tiene hoy cada capa en este repo.</p>
+      <div class="brk" aria-hidden="true">
+        <div><span class="lbl">“armar el segundo cerebro”</span></div>
+        <div><span class="lbl">“volverlo un sistema operativo”</span></div>
+      </div>
+      <div class="c4">
+        <article class="card">
+          <div class="k"><span class="lbl">C1 · estático</span><code>context/</code></div>
+          <h3>Contexto</h3>
+          <div class="q">¿Quién sos?</div>
+          <div class="ex">Identidad, manifiesto, estrategia, marca, conocimiento destilado, equipo y la memoria de la organización.</div>
+          <div class="lbl">26 archivos</div>
+          <div class="meter"><i style="width:100%"></i></div>
+        </article>
+        <article class="card">
+          <div class="k"><span class="lbl">C2 · en vivo</span><code>connections/</code></div>
+          <h3>Conexiones</h3>
+          <div class="q">¿Qué datos vivos tenés?</div>
+          <div class="ex">Mail, calendario, Notion, CRM, MCPs. Herramientas <code>TL_*</code>. Las credenciales viven en 1Password, nunca en disco.</div>
+          <div class="lbl">1 archivo · inventario</div>
+          <div class="meter"><i style="width:4%"></i></div>
+        </article>
+        <article class="card">
+          <div class="k"><span class="lbl">C3 · hacer</span><code>capabilities/</code></div>
+          <h3>Capacidades</h3>
+          <div class="q">¿Qué podés hacer?</div>
+          <div class="ex">Agentes <code>AG_*</code>, flujos <code>WF_*</code> y skills. Cada ficha define rol, etapas, contratos y fallas.</div>
+          <div class="lbl">13 archivos</div>
+          <div class="meter"><i style="width:50%"></i></div>
+        </article>
+        <article class="card">
+          <div class="k"><span class="lbl">C4 · ritmo</span><code>cadence/</code></div>
+          <h3>Cadencia</h3>
+          <div class="q">¿Qué corre solo?</div>
+          <div class="ex">El pulso de lo abierto, el log de decisiones, el de evolución, rutinas y dashboard. Se guardan crudos, sin resumir.</div>
+          <div class="lbl">11 archivos</div>
+          <div class="meter"><i style="width:42%"></i></div>
+        </article>
+      </div>
+      <div class="flow">
+        <span class="chip">Conexión · ingesta viva</span><span class="arr">→</span>
+        <span class="chip">Capacidad · mina decisiones, riesgos, tareas</span><span class="arr">→</span>
+        <span class="chip acc">Contexto · residuo durable</span>
+        <span class="note">Así fluye el dato. Lo crudo y sensible (transcripciones, por ejemplo) espera en <code style="font-family:var(--mono);font-size:11px;color:var(--fg)">vault/</code>, que nunca se sube a git.</span>
+      </div>
+    </section>
+  </div>
+
+  <!-- Row 3: harness / method / session -->
+  <div class="row r3">
+    <section class="panel">
+      <div class="ph"><span class="idx">D</span><h2>Qué es un “arnés”</h2></div>
+      <p class="sub">La teoría de fondo (dos papers de 2026) llama <i>harness</i> a lo que decide qué ve y qué hace el modelo. Acá tiene tres capas.</p>
+      <div class="stack">
+        <div class="layer os"><span class="lbl">OS layer</span><p>La lógica: <code>C-OS.md</code> + las 4C. Propia de COMANDO, versionada por Mark.</p></div>
+        <div class="layer"><span class="lbl">Charter</span><p>El runtime: <code>CLAUDE.md</code>, <code>.claude/</code> con los skills, <code>vault/</code>. Fijo, compartido.</p></div>
+        <div class="layer model"><span class="lbl">Modelo</span><p>Claude, en el rol de Comander. No se toca: se escribe lo que lo rodea.</p></div>
+      </div>
+      <p class="aside">Cada .md del repo es parte del arnés. Se evoluciona sumando y reubicando, nunca demoliendo.</p>
+    </section>
+
+    <section class="panel">
+      <div class="ph"><span class="idx">E</span><h2>El método que se vende</h2></div>
+      <p class="sub"><code style="font-family:var(--mono);font-size:11px;color:var(--fg)">WF_CANON_DEPLOY</code>: de la realidad de un cliente a un OS lleno, en su propio repo.</p>
+      <div class="steps">
+        <div class="step"><span class="num">01</span><div><h4>Diagnose</h4><p>Auditar la operación actual contra las 4C.</p><div class="out">→ mapa de brechas</div></div></div>
+        <div class="step"><span class="num">02</span><div><h4>Design</h4><p>Mapear al cliente en 4C: áreas, agentes, flujos, conexiones.</p><div class="out">→ documento de diseño</div></div></div>
+        <div class="step"><span class="num">03</span><div><h4>Deploy</h4><p>Estampar desde la plantilla, llenar, conectar vía 1Password, fijar rutinas, pasar el lint.</p><div class="out">→ instancia que bootea · firma del principal</div></div></div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="ph"><span class="idx">F</span><h2>Cómo se trabaja</h2></div>
+      <p class="sub">Desde el Mark VI lo operan dos personas, sin ramas ni aprobaciones. GitHub es el punto de encuentro.</p>
+      <div class="fig">
+        <svg viewBox="0 0 340 200" role="img" aria-label="Ciclo de sesión: startup, trabajo, upc, GitHub main">
+          <defs>
+            <marker id="f1" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" class="ah"/></marker>
+            <marker id="f2" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" class="ah-acc"/></marker>
+          </defs>
+          <rect x="4" y="14" width="96" height="46" rx="8" class="box"/>
+          <text x="52" y="34" text-anchor="middle" class="t-fg">/STARTUP</text>
+          <text x="52" y="50" text-anchor="middle" class="t-sans">pull · boot</text>
+          <path d="M100 37H128" class="ln" marker-end="url(#f1)"/>
+          <rect x="130" y="14" width="80" height="46" rx="8" class="box"/>
+          <text x="170" y="34" text-anchor="middle" class="t-fg">TRABAJO</text>
+          <text x="170" y="50" text-anchor="middle" class="t-sans">con Comander</text>
+          <path d="M210 37H238" class="ln" marker-end="url(#f1)"/>
+          <rect x="240" y="14" width="96" height="46" rx="8" class="box"/>
+          <text x="288" y="34" text-anchor="middle" class="t-fg">/UPC</text>
+          <text x="288" y="50" text-anchor="middle" class="t-sans">log · commit · push</text>
+          <path d="M288 60V104H226" class="ln-acc" marker-end="url(#f2)"/>
+          <rect x="112" y="86" width="116" height="40" rx="20" class="box-acc"/>
+          <text x="170" y="111" text-anchor="middle" class="t-fg">GITHUB · MAIN</text>
+          <path d="M112 106H52V64" class="ln-acc" marker-end="url(#f2)"/>
+          <path d="M140 126L90 160M200 126L250 160" class="ln" stroke-dasharray="3 3"/>
+          <text x="70" y="176" text-anchor="middle" class="t-fg">MARIANO</text>
+          <text x="70" y="191" text-anchor="middle" class="t-sans">principal</text>
+          <text x="270" y="176" text-anchor="middle" class="t-fg">J.M.</text>
+          <text x="270" y="191" text-anchor="middle" class="t-sans">operador</text>
+        </svg>
+      </div>
+    </section>
+  </div>
+
+  <!-- Row 4: timeline -->
+  <div class="row">
+    <section class="panel" style="padding-right:0">
+      <div class="ph"><span class="idx">G</span><h2>Seis Marks en seis meses</h2></div>
+      <p class="sub">Commits por mes y los saltos de versión del sistema. Junio concentró la refundación: nomenclatura, modelo 4C, Canon y plantilla en dos días.</p>
+      <div class="fig minw tl-wrap" id="tl">
+        <svg viewBox="0 0 1000 250" role="img" aria-label="Commits por mes de abril a octubre de 2026 y fechas de cada Mark" id="tlsvg"></svg>
+        <div class="tip" id="tip"></div>
+      </div>
+      <div class="legend">
+        <span class="lbl"><i></i>commits por mes</span>
+        <span class="lbl"><i class="mk"></i>Mark del OS</span>
+        <span class="lbl">49 de Mariano · 5 de J.M.</span>
+      </div>
+    </section>
+  </div>
+
+  <!-- Row 5: roster + projects -->
+  <div class="row r-wide">
+    <section class="panel">
+      <div class="ph"><span class="idx">H</span><h2>Lo que COMANDO construye</h2></div>
+      <p class="sub">La carpeta <code style="font-family:var(--mono);font-size:11px;color:var(--fg)">projects/</code> y las instancias. Estado según el pulso del 19 de octubre.</p>
+      <div class="tw">
+        <table>
+          <thead><tr><th>Proyecto</th><th>Pierna · unidad</th><th>Estado</th></tr></thead>
+          <tbody>
+            <tr><td>comando-ai.com</td><td>Fábrica agéntica · sitio comercial con agente de diagnóstico</td><td><span class="pill live">en vivo</span></td></tr>
+            <tr><td>AI Readiness Test</td><td>Fábrica · lead magnet de 13 pasos en /readiness</td><td><span class="pill live">en vivo</span></td></tr>
+            <tr><td>comando.live</td><td>Estudio creativo · archivo navegable, estilo PLASTER-RED</td><td><span class="pill wip">V1.1 local</span></td></tr>
+            <tr><td>SKINS.MD</td><td>Producto propio · chat de IA con skins</td><td><span class="pill live">en vivo</span></td></tr>
+            <tr><td>jm-os</td><td>Instancia del Canon · aprendizaje de J.M.</td><td><span class="pill wip">Gate 1</span></td></tr>
+            <tr><td>MENTOR</td><td>Venture relacionada, sin fines de lucro · medio de cultura</td><td><span class="pill wip">docs + sitio</span></td></tr>
+            <tr><td>Creative Capital</td><td>Alianza · co-construcción con equity</td><td><span class="pill wip">deck</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="ph"><span class="idx">I</span><h2>La plantilla de agentes</h2></div>
+      <p class="sub">IDs por área: <code style="font-family:var(--mono);font-size:11px;color:var(--fg)">TIPO_ÁREA_ROL</code>. El área dice qué hace, no a quién reporta.</p>
+      <div class="tw">
+        <table>
+          <thead><tr><th>Área</th><th>Agentes</th><th>Flujos</th></tr></thead>
+          <tbody>
+            <tr><td><code>CORE</code></td><td>Comander, el orquestador</td><td>Intake · Evolution</td></tr>
+            <tr><td><code>WEB</code></td><td>Director · UX · UI · QA</td><td>Web Program</td></tr>
+            <tr><td><code>MKT</code></td><td>CMO · Content · Growth</td><td>—</td></tr>
+            <tr><td><code>LAB</code></td><td>Research (pierna sin fines de lucro)</td><td>—</td></tr>
+            <tr><td><code>CANON</code></td><td>— meta: construye instancias</td><td>Canon Deploy</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <!-- Row 6: authority + open -->
+  <div class="row r2">
+    <section class="panel">
+      <div class="ph"><span class="idx">J</span><h2>Lo que queda con el principal</h2></div>
+      <p class="sub">Cualquier operador lee y edita todo el repo. Seis cosas escalan a Mariano, opere quien opere.</p>
+      <ul class="list">
+        <li><span class="mk">01</span><span><b>Dinero</b> · gastar, cotizar, facturar.</span></li>
+        <li><span class="mk">02</span><span><b>Comunicación externa</b> · todo lo que sale del estudio. Los borradores esperan en <code style="font-family:var(--mono);font-size:11px;color:var(--fg)">COMS/</code>.</span></li>
+        <li><span class="mk">03</span><span><b>Identidad</b> · cualquier cambio en <code style="font-family:var(--mono);font-size:11px;color:var(--fg)">context/identity/</code>.</span></li>
+        <li><span class="mk">04</span><span><b>Clientes nuevos</b> · el alta de un cliente.</span></li>
+        <li><span class="mk">05</span><span><b>Definición de terminado</b> disputada en un flujo.</span></li>
+        <li><span class="mk">06</span><span><b>Sistemas sin inventariar</b> que una herramienta tocaría.</span></li>
+      </ul>
+    </section>
+
+    <section class="panel">
+      <div class="ph"><span class="idx">K</span><h2>Abierto ahora</h2></div>
+      <p class="sub">Del pulso. El cuadrado ámbar marca lo que espera una acción del principal.</p>
+      <ul class="list">
+        <li><span class="mk hot">■</span><span><b>Vault de 1Password para J.M.</b> · lo único que le falta para cerrar su Gate 1. Comprometido para la semana del 19/10.</span></li>
+        <li><span class="mk">○</span><span><b>Canon multi-operador</b> · bajar el patrón del Mark VI a la plantilla.</span></li>
+        <li><span class="mk">○</span><span><b>Mapa institucional</b> · faltan las partes 2 (qué es el repo) y 3 (cómo operamos).</span></li>
+        <li><span class="mk">○</span><span><b>Narrativa V2</b> · el texto de hipótesis sobre <i>profilicity</i> sigue sin escribir.</span></li>
+        <li><span class="mk">○</span><span><b>comando.live</b> · la versión final y los casos no están definidos.</span></li>
+        <li><span class="mk">○</span><span><b>Readiness Test</b> · falta cablear la captura de leads y el costo.</span></li>
+      </ul>
+    </section>
+  </div>
+
+  <footer>
+    <span class="lbl">Fuentes: C-OS.md · institutional-map.md · canon/ · cadence/pulse.md · git log</span>
+    <span class="lbl">COMANDO · Buenos Aires</span>
+  </footer>
+</div>
+
+<script>
+(function(){
+  var svg=document.getElementById('tlsvg'),tip=document.getElementById('tip'),wrap=document.getElementById('tl');
+  var NS='http://www.w3.org/2000/svg';
+  function el(n,a,t){var e=document.createElementNS(NS,n);for(var k in a)e.setAttribute(k,a[k]);if(t!=null)e.textContent=t;svg.appendChild(e);return e;}
+  var X0=40,X1=960,DAYS=214; function x(d){return X0+d/DAYS*(X1-X0);}
+  var BASE=200,H=100,MAX=24; function y(v){return BASE-v/MAX*H;}
+  var months=[['ABR',14,2],['MAY',45,9],['JUN',75,24],['JUL',106,2],['AGO',137,0],['SEP',167,6],['OCT',198,11]];
+  var bounds=[0,30,61,91,122,153,183,214];
+  // grid
+  [0,10,20].forEach(function(v){el('line',{x1:X0,x2:X1,y1:y(v),y2:y(v),'class':'grid'});el('text',{x:X0-8,y:y(v)+3,'text-anchor':'end'},v);});
+  bounds.forEach(function(d){el('line',{x1:x(d),x2:x(d),y1:BASE,y2:BASE+5,'class':'grid'});});
+  // bars
+  months.forEach(function(m){
+    var cx=x(m[1]),w=62,v=m[2],top=y(v),r=Math.min(4,(BASE-top)/2);
+    if(v>0){
+      var d='M'+(cx-w/2)+' '+BASE+'V'+(top+r)+'Q'+(cx-w/2)+' '+top+' '+(cx-w/2+r)+' '+top+'H'+(cx+w/2-r)+'Q'+(cx+w/2)+' '+top+' '+(cx+w/2)+' '+(top+r)+'V'+BASE+'Z';
+      el('path',{d:d,'class':v===MAX?'bar':'bar'});
+    } else {
+      el('line',{x1:cx-w/2,x2:cx+w/2,y1:BASE-.5,y2:BASE-.5,stroke:'var(--rule-med)'});
+    }
+    el('text',{x:cx,y:BASE+20,'text-anchor':'middle','class':'t-fg'},m[0]);
+    el('text',{x:cx,y:BASE+36,'text-anchor':'middle'},v+' commits');
+    var hit=el('rect',{x:cx-w/2-8,y:BASE-H-10,width:w+16,height:H+50,'class':'hit',tabindex:0,'aria-label':m[0]+': '+v+' commits'});
+    function show(){var b=svg.getBoundingClientRect(),s=b.width/1000;tip.textContent=m[0]+' 2026 · '+v+' commits';tip.style.left=(cx*s)+'px';tip.style.top=(top*s-4+wrap.scrollTop)+'px';tip.classList.add('on');}
+    hit.addEventListener('mouseenter',show);hit.addEventListener('focus',show);
+    hit.addEventListener('mouseleave',function(){tip.classList.remove('on');});hit.addEventListener('blur',function(){tip.classList.remove('on');});
+  });
+  el('text',{x:x(75),y:y(24)-8,'text-anchor':'middle','class':'t-fg'},'24');
+  // marks
+  var marks=[[24,'M1','25 abr · boot',0],[73,'M2 · M3 · M4','13–14 jun · 4C + Canon',0],[178,'M5','26 sep · COMANDO Corp',1],[194,'M6','12 oct · dos operadores',0]];
+  marks.forEach(function(k){
+    var mx=x(k[0]),ly=k[3]?52:22;
+    el('line',{x1:mx,x2:mx,y1:ly+14,y2:BASE,stroke:'var(--silver)','stroke-width':1,opacity:.5,'stroke-dasharray':'2 3'});
+    el('circle',{cx:mx,cy:ly+14,r:3,fill:'var(--accent)'});
+    var anchor=k[0]>150?'end':'start';
+    var tx=anchor==='end'?mx-8:mx+8;
+    el('text',{x:tx,y:ly+6,'text-anchor':anchor,'class':'t-fg'},k[1]);
+    el('text',{x:tx,y:ly+19,'text-anchor':anchor,'class':'t-sans'},k[2]);
+  });
+  // today
+  var tx=x(207);
+  el('line',{x1:tx,x2:tx,y1:BASE-H-6,y2:BASE,stroke:'var(--accent)','stroke-width':1});
+  el('text',{x:tx+6,y:BASE-H-2,'class':'t-acc'},'HOY');
+})();
+</script>
+
+</body>
+</html>
